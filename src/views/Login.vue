@@ -117,6 +117,9 @@ export default {
                     message: 'Login success',
                     type: 'success'
                   })
+                  setTimeout(() => {
+                    this.$router.push({name: 'index'})
+                  }, 2000)
                 } else {
                   ElMessage({
                     message: 'Error: no specified response',
@@ -166,7 +169,7 @@ export default {
     }
   },
   mounted() {
-    if (CheckSession()) {
+    if (CheckSession() != -1) {
       this.isDisabled = true
       ElMessage({
         message: "Already logged in",

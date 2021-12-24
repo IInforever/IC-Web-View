@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-container>
-      <el-header>
+      <el-header id="auth-header">
         <el-page-header id="auth-page-header" content="Register" title="Back"
                         @back="this.$router.back()"></el-page-header>
       </el-header>
@@ -120,6 +120,9 @@ export default {
                       message: 'Success',
                       type: 'success'
                     })
+                    setTimeout(() => {
+                      this.$router.push({name: 'index'})
+                    }, 2000)
                   })
                   .catch((error) => {
                         clearTimeout(timer)
@@ -163,7 +166,7 @@ export default {
     },
   },
   mounted() {
-    if (CheckSession()) {
+    if (CheckSession() != -1) {
       this.isDisabled = true
       ElMessage({
         message: "Already logged in",

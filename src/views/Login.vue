@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-container>
-      <el-header>
-        <el-page-header id="auth-header" title="Back" content="Login" @back="this.$router.back()"></el-page-header>
+      <el-header id="auth-header">
+        <el-page-header id="auth-page-header" title="Back" content="Login" @back="this.$router.back()"></el-page-header>
       </el-header>
       <el-main>
         <el-form id="auth-form" ref="loginForm" :rules="rules" :model="postForm" :label-position="isLarge?'':'top'"
@@ -12,11 +12,11 @@
           <el-form-item label="Username" prop="name">
             <el-input v-model="postForm.name"></el-input>
           </el-form-item>
-          <div class="placeholder"></div>
+          <div class="placeholder" v-if="isLarge"></div>
           <el-form-item label="Password" prop="passwd">
             <el-input v-model="postForm.passwd" type="password"></el-input>
           </el-form-item>
-          <div class="placeholder"></div>
+          <div class="placeholder" v-if="isLarge"></div>
           <el-button @click="submit" type="primary" :loading="isLoading">
             Submit
             <el-icon class="el-icon-arrow-right">
@@ -71,6 +71,7 @@ const rules = {
 <script>
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import {CheckSession} from "../lib/auth-util";
 
 export default {
   data() {
@@ -106,7 +107,11 @@ export default {
                 if (response.headers.authorization) {
                   let token = response.headers.authorization
                   this.isDisabled = true
-                  window.sessionStorage.setItem("auth-token", token)
+                  if (this.authScope === "admin") {
+                    window.sessionStorage.setItem("admin-token", token)
+                  } else {
+                    window.sessionStorage.setItem("auth-token", token)
+                  }
                   ElMessage({
                     message: 'Login success',
                     type: 'success'
@@ -160,6 +165,10 @@ export default {
     }
   },
   mounted() {
+    if (CheckSession()) {
+      this.isDisabled = true
+    }
+
     window.addEventListener("resize", () => {
       this.isLarge = document.documentElement.clientWidth > 550;
     })

@@ -2,7 +2,7 @@
   <div>
     <el-container>
       <el-header>
-        <el-page-header id="auth-header" title="Back" content="Register" @back="this.$router.back()"></el-page-header>
+        <el-page-header id="auth-page-header" title="Back" content="Register" @back="this.$router.back()"></el-page-header>
       </el-header>
       <el-main>
         <el-form id="auth-form" ref="registerForm" :rules="rules" :model="postForm" :label-position="isLarge?'':'top'"
@@ -12,15 +12,15 @@
           <el-form-item label="Username" prop="name">
             <el-input v-model="postForm.name"></el-input>
           </el-form-item>
-          <div class="placeholder"></div>
+          <div class="placeholder" v-if="isLarge"></div>
           <el-form-item label="Email" prop="email">
             <el-input v-model="postForm.email"></el-input>
           </el-form-item>
-          <div class="placeholder"></div>
+          <div class="placeholder" v-if="isLarge"></div>
           <el-form-item label="Password" prop="passwd">
             <el-input v-model="postForm.passwd" type="password"></el-input>
           </el-form-item>
-          <div class="placeholder"></div>
+          <div class="placeholder" v-if="isLarge"></div>
           <el-button @click="submit" type="primary" :loading="isLoading">
             Submit
             <el-icon class="el-icon-arrow-right">
@@ -85,6 +85,7 @@ const rules = {
 <script>
 import {ElMessage} from "element-plus";
 import axios from "axios";
+import {CheckSession} from "../lib/auth-util";
 
 export default {
   name: "Register",
@@ -158,13 +159,15 @@ export default {
             }
           }
       )
-
     },
-    mounted() {
-      window.addEventListener("resize", () => {
-        this.isLarge = document.documentElement.clientWidth > 550;
-      })
+  },
+  mounted() {
+    if (CheckSession()) {
+      this.isDisabled = true
     }
+    window.addEventListener("resize", () => {
+      this.isLarge = document.documentElement.clientWidth > 550;
+    })
   }
 }
 </script>

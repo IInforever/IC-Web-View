@@ -7,15 +7,15 @@
         box-shadow: var(--el-box-shadow-base);
         border: 1px solid var(--el-border-color-base);
         border-radius: var(--el-border-radius-base);
-        width: 50%;
+        /*width: 450px;*/
         min-width: 400px;
-        max-width: 500px;
+        max-width: 450px;
         padding: 20px 40px;
     }
 
-    #auth-header {
-        width: 50%;
-        min-width: 400px;
+    #auth-page-header {
+        /*width: 50%;*/
+        min-width: 450px;
         max-width: 500px;
         margin: 0 auto;
     }
@@ -27,9 +27,13 @@
     }
 }
 
+#auth-header {
+    margin-top: 60px;
+}
+
 .line {
     border-top: 1px dashed var(--el-border-color-base);
-    margin-bottom: 20px;
+    margin: 20px;
 }
 
 .placeholder {

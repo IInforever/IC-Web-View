@@ -1,6 +1,7 @@
 <template>
   <p>&copy; {{currentYear}}
-    <a :href="COM_MAIN_PAGE" style="line-height: 20px;vertical-align: center" target="_blank">{{COM_NAME}}</a></p>
+    <a :href="COM_MAIN_PAGE" style="line-height: 20px;vertical-align: center" target="_blank">{{COM_NAME}}</a>
+  </p>
 </template>
 
 <script setup>
@@ -19,6 +20,7 @@ p {
   color: var(--el-text-color-regular);
   font-size: var(--el-font-size-base);
   font-weight: var(--el-font-weight-primary);
+  margin: 20px;
 }
 a:hover {
   text-decoration: underline;

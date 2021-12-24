@@ -1,7 +1,7 @@
 const routes = [
     {
         path: '/',
-        name: 'home',
+        name: 'index',
         component: () => import('../views/Index.vue')
     },
     {
@@ -13,6 +13,11 @@ const routes = [
         path: '/register',
         name: 'register',
         component: () => import('../views/Register.vue')
+    },
+    {
+        path: '/home',
+        name: 'home',
+        component: () => import('../views/Home.vue')
     }
 ]
 

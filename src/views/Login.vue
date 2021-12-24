@@ -1,34 +1,39 @@
 <template>
-  <el-container>
-    <el-header>
-      <el-page-header id="header" title="Back" content="Login" @back="this.$router.back()"></el-page-header>
-    </el-header>
-    <el-main>
-      <el-form id="login-form" ref="loginForm" :rules="rules" :model="postForm" :label-position="isLarge?'':'top'">
-        <h1><span v-if="authScope==='admin'">Admin </span>Login</h1>
-        <div class="line"></div>
-        <el-form-item label="Username" prop="name">
-          <el-input v-model="postForm.name"></el-input>
-        </el-form-item>
-        <div class="placeholder"></div>
-        <el-form-item label="Password" prop="passwd">
-          <el-input v-model="postForm.passwd" type="password"></el-input>
-        </el-form-item>
-        <el-button @click="submit" type="primary" :loading="isLoading">
-          Submit
-          <el-icon class="el-icon-arrow-right">
-            <Right/>
-          </el-icon>
-        </el-button>
-      </el-form>
-    </el-main>
-    <el-footer>
-      <Footer></Footer>
-    </el-footer>
-  </el-container>
+  <div>
+    <el-container>
+      <el-header>
+        <el-page-header id="auth-header" title="Back" content="Login" @back="this.$router.back()"></el-page-header>
+      </el-header>
+      <el-main>
+        <el-form id="auth-form" ref="loginForm" :rules="rules" :model="postForm" :label-position="isLarge?'':'top'"
+                 label-width="100px" :disabled="isDisabled">
+          <h1><span v-if="authScope==='admin'">Admin </span>Login</h1>
+          <div class="line"></div>
+          <el-form-item label="Username" prop="name">
+            <el-input v-model="postForm.name"></el-input>
+          </el-form-item>
+          <div class="placeholder"></div>
+          <el-form-item label="Password" prop="passwd">
+            <el-input v-model="postForm.passwd" type="password"></el-input>
+          </el-form-item>
+          <div class="placeholder"></div>
+          <el-button @click="submit" type="primary" :loading="isLoading">
+            Submit
+            <el-icon class="el-icon-arrow-right">
+              <Right/>
+            </el-icon>
+          </el-button>
+        </el-form>
+      </el-main>
+      <el-footer>
+        <Footer></Footer>
+      </el-footer>
+    </el-container>
+  </div>
 </template>
 
 <script setup>
+import "../assets/auth-form.css"
 import {Right} from "@element-plus/icons-vue"
 import Footer from "../components/Footer.vue";
 
@@ -77,11 +82,13 @@ export default {
       isLarge: document.documentElement.clientWidth > 550,
       isLoading: false,
       authScope: this.$route.query.scope,
+      isDisabled: false
     }
   },
   methods: {
     submit() {
       this.$refs.loginForm.validate((valid) => {
+        // check inputs
         if (valid) {
           let time = setTimeout(() => {
             this.isLoading = true
@@ -93,12 +100,12 @@ export default {
             url = "/api/login"
           axios.post(url, this.$data.postForm)
               .then((response) => {
+                // success
                 clearTimeout(time)
                 this.isLoading = false
-                // console.log(response)
                 if (response.headers.authorization) {
                   let token = response.headers.authorization
-                  // console.log(DecodeJWT(token))
+                  this.isDisabled = true
                   window.sessionStorage.setItem("auth-token", token)
                   ElMessage({
                     message: 'Login success',
@@ -112,6 +119,7 @@ export default {
                 }
               })
               .catch((error) => {
+                // error
                 clearTimeout(time)
                 this.isLoading = false
                 if (error.response) {
@@ -128,7 +136,7 @@ export default {
                     })
                   } else {
                     ElMessage({
-                      message: 'Login fail: unknown response',
+                      message: 'Login fail: unknown error',
                       type: 'error'
                     })
                   }
@@ -161,41 +169,4 @@ export default {
 
 <style scoped>
 
-#login-form {
-  margin: 0 auto;
-}
-
-@media (min-width: 550px) {
-  #login-form {
-    box-shadow: var(--el-box-shadow-base);
-    border: 1px solid var(--el-border-color-base);
-    border-radius: var(--el-border-radius-base);
-    width: 50%;
-    min-width: 400px;
-    max-width: 500px;
-    padding: 20px 40px;
-  }
-
-  #header {
-    width: 50%;
-    min-width: 400px;
-    max-width: 500px;
-    margin: 0 auto;
-  }
-}
-
-@media (max-width: 550px) {
-  #login-form {
-    width: 95%;
-  }
-}
-
-.line {
-  border-top: 1px dashed var(--el-border-color-base);
-  margin-bottom: 20px;
-}
-
-.placeholder {
-  height: 20px;
-}
 </style>

@@ -1,0 +1,37 @@
+#auth-form {
+    margin: 0 auto;
+}
+
+@media (min-width: 550px) {
+    #auth-form {
+        box-shadow: var(--el-box-shadow-base);
+        border: 1px solid var(--el-border-color-base);
+        border-radius: var(--el-border-radius-base);
+        width: 50%;
+        min-width: 400px;
+        max-width: 500px;
+        padding: 20px 40px;
+    }
+
+    #auth-header {
+        width: 50%;
+        min-width: 400px;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 550px) {
+    #auth-form {
+        width: 95%;
+    }
+}
+
+.line {
+    border-top: 1px dashed var(--el-border-color-base);
+    margin-bottom: 20px;
+}
+
+.placeholder {
+    height: 20px;
+}

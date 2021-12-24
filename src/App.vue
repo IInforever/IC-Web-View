@@ -1,13 +1,12 @@
 <script setup>
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import 'element-plus/dist/index.css'
-</script>
+import 'element-plus/dist/index.css'</script>
 
 <template>
 
   <router-view v-slot="{ Component }">
-    <transition name="fade" mode="out-in">
+    <transition mode="out-in" name="fade">
       <component :is="Component"/>
     </transition>
   </router-view>

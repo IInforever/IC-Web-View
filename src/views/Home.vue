@@ -9,8 +9,8 @@
           </el-col>
           <el-col :span="6" style="text-align: right">
             <el-dropdown @command="handleCommand">
-              <span class="el-dropdown-link"
-                    :style="{color: 'aliceblue',fontSize: 'var(--el-font-size-base)',fontWeight: 'bold'}">
+              <span :style="{color: 'aliceblue',fontSize: 'var(--el-font-size-base)',fontWeight: 'bold'}"
+                    class="el-dropdown-link">
               {{ user.name }}
                 <el-icon class="el-icon--right" style="vertical-align: middle">
                   <arrow-down></arrow-down>
@@ -39,9 +39,7 @@
 </template>
 
 <script setup>
-import {ArrowDown} from "@element-plus/icons-vue"
-import Footer from "../components/Footer.vue";
-</script>
+import Footer from "../components/Footer.vue";</script>
 
 <script>
 import axios from "axios";

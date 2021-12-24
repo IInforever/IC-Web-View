@@ -2,26 +2,27 @@
   <div>
     <el-container>
       <el-header>
-        <el-page-header id="auth-page-header" title="Back" content="Register" @back="this.$router.back()"></el-page-header>
+        <el-page-header id="auth-page-header" content="Register" title="Back"
+                        @back="this.$router.back()"></el-page-header>
       </el-header>
       <el-main>
-        <el-form id="auth-form" ref="registerForm" :rules="rules" :model="postForm" :label-position="isLarge?'':'top'"
-                 label-width="100px" :disabled="isDisabled">
+        <el-form id="auth-form" ref="registerForm" :disabled="isDisabled" :label-position="isLarge?'':'top'" :model="postForm"
+                 :rules="rules" label-width="100px">
           <h1>Register</h1>
           <div class="line"></div>
           <el-form-item label="Username" prop="name">
             <el-input v-model="postForm.name"></el-input>
           </el-form-item>
-          <div class="placeholder" v-if="isLarge"></div>
+          <div v-if="isLarge" class="placeholder"></div>
           <el-form-item label="Email" prop="email">
             <el-input v-model="postForm.email"></el-input>
           </el-form-item>
-          <div class="placeholder" v-if="isLarge"></div>
+          <div v-if="isLarge" class="placeholder"></div>
           <el-form-item label="Password" prop="passwd">
             <el-input v-model="postForm.passwd" type="password"></el-input>
           </el-form-item>
-          <div class="placeholder" v-if="isLarge"></div>
-          <el-button @click="submit" type="primary" :loading="isLoading">
+          <div v-if="isLarge" class="placeholder"></div>
+          <el-button :loading="isLoading" type="primary" @click="submit">
             Submit
             <el-icon class="el-icon-arrow-right">
               <Right/>
@@ -164,6 +165,13 @@ export default {
   mounted() {
     if (CheckSession()) {
       this.isDisabled = true
+      ElMessage({
+        message: "Already logged in",
+        type: "warning"
+      })
+      setTimeout(() => {
+        this.$router.push({name: 'index'})
+      }, 2000)
     }
     window.addEventListener("resize", () => {
       this.isLarge = document.documentElement.clientWidth > 550;

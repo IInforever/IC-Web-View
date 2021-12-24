@@ -119,7 +119,7 @@ export default {
                   })
                   setTimeout(() => {
                     this.$router.push({name: 'index'})
-                  }, 2000)
+                  }, 1000)
                 } else {
                   ElMessage({
                     message: 'Error: no specified response',
@@ -177,7 +177,7 @@ export default {
       })
       setTimeout(() => {
         this.$router.push({name: 'index'})
-      }, 2000)
+      }, 1000)
     }
     window.addEventListener("resize", () => {
       this.isLarge = document.documentElement.clientWidth > 550;

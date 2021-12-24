@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-container>
-      <el-header>
+      <el-header id="header">
         <el-row justify="space-around" style="line-height: 60px">
           <el-col :span="6"></el-col>
           <el-col :span="6">
@@ -13,7 +13,7 @@
                     class="el-dropdown-link">
               {{ user.name }}
                 <el-icon class="el-icon--right" style="vertical-align: middle">
-                  <arrow-down></arrow-down>
+                  <ArrowDown></ArrowDown>
               </el-icon>
               </span>
               <template #dropdown>
@@ -28,7 +28,7 @@
       <el-main>
         <el-skeleton v-if="isLoading"/>
         <el-card v-if="!isLoading" id="main-card">
-          Hello, {{ user.name }}
+          Hello, <span style="text-decoration: underline;font-weight: bold">{{ user.name }}</span>
         </el-card>
       </el-main>
       <el-footer>
@@ -39,6 +39,7 @@
 </template>
 
 <script setup>
+import {ArrowDown} from "@element-plus/icons-vue";
 import Footer from "../components/Footer.vue";</script>
 
 <script>
@@ -64,7 +65,7 @@ export default {
         })
         setTimeout(() => {
           this.$router.push({name: 'index'})
-        }, 2000)
+        }, 1000)
       }
     }
   },
@@ -76,8 +77,8 @@ export default {
         type: 'warning'
       })
       setTimeout(() => {
-        this.$router.push({name: 'index'})
-      }, 2000)
+        this.$router.push({name: 'login'})
+      }, 1000)
       return
     }
 
@@ -87,14 +88,33 @@ export default {
       }
     })
         .then((response) => {
-          this.isLoading = false
-          // console.log(response)
           UpdateToken(response)
+          this.isLoading = false
           this.user = response.data
         })
         .catch((error) => {
-          // console.log(error.response)
-          UpdateToken(error.response)
+          if (error.response) {
+            let status = error.response.status
+            if (status >= 500) {
+              ElMessage({
+                message: 'Server error',
+                type: 'error'
+              })
+            } else if (status === 400 && error.response.data.code === 20) {
+              ElMessage({
+                message: 'Login credentials expired',
+                type: 'warning'
+              })
+              setTimeout(() => {
+                this.$router.push({name: 'login'})
+              }, 1000)
+            } else {
+              ElMessage({
+                message: 'Fail: unknown error',
+                type: 'error'
+              })
+            }
+          }
         })
   }
 
@@ -103,7 +123,7 @@ export default {
 
 <style scoped>
 
-.el-header {
+#header{
   background-color: var(--el-color-primary);
   border-bottom: 2px solid var(--el-border-color-base);
 }

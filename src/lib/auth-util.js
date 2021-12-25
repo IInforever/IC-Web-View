@@ -18,7 +18,7 @@ export function CheckSession() {
             sessionStorage.removeItem(sessions[index])
             continue
         }
-        count = index
+        count = parseInt(index)
     }
     return count
 }

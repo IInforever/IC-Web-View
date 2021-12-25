@@ -169,10 +169,20 @@ export default {
     }
   },
   mounted() {
-    if (CheckSession() != -1) {
+    let auth = CheckSession();
+    if (auth === 0) {
       this.isDisabled = true
       ElMessage({
         message: "Already logged in",
+        type: "warning"
+      })
+      setTimeout(() => {
+        this.$router.push({name: 'home'})
+      }, 1000)
+    } else if (auth === 1) {
+      this.isDisabled = true
+      ElMessage({
+        message: "Already logged in as Administrator",
         type: "warning"
       })
       setTimeout(() => {

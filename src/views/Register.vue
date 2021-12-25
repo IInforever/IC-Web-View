@@ -117,11 +117,11 @@ export default {
                     this.isLoading = false
                     this.isDisabled = true
                     ElMessage({
-                      message: 'Success',
+                      message: 'User registered',
                       type: 'success'
                     })
                     setTimeout(() => {
-                      this.$router.push({name: 'index'})
+                      this.$router.push({name: 'login'})
                     }, 1000)
                   })
                   .catch((error) => {
@@ -166,7 +166,7 @@ export default {
     },
   },
   mounted() {
-    if (CheckSession() != -1) {
+    if (CheckSession() !== -1) {
       this.isDisabled = true
       ElMessage({
         message: "Already logged in",

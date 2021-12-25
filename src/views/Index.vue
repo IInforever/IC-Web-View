@@ -9,6 +9,8 @@
       <router-link :to="{ name: 'register' }">Register</router-link>
       <br/>
       <router-link :to="{ name: 'login', query: {scope:'admin'}}">Admin Login</router-link>
+      <br/>
+      <el-link @click="logout">logout</el-link>
     </p>
     <Footer></Footer>
   </div>
@@ -16,6 +18,20 @@
 
 <script setup>
 import Footer from "../components/Footer.vue";</script>
+
+<script>
+import {ElMessage} from "element-plus";
+
+export default {
+  methods: {
+    logout() {
+      sessionStorage.removeItem("auth-token")
+      sessionStorage.removeItem("admin-token")
+      ElMessage("Logged out")
+    }
+  }
+}
+</script>
 
 <style scoped>
 #title {

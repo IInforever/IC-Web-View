@@ -28,7 +28,50 @@
       <el-main>
         <el-skeleton v-if="isLoading"/>
         <el-card v-if="!isLoading" id="main-card">
-          Hello, <span style="text-decoration: underline;font-weight: bold">{{ user.name }}</span>
+          <h2>
+            Hello, <span style="text-decoration: underline;font-weight: bold">{{ user.name }}</span>
+          </h2>
+          <el-descriptions
+              title="User info"
+              column="1"
+              border>
+            <el-descriptions-item>
+              <template #label>
+                <el-icon>
+                  <Key/>
+                </el-icon>
+                UID
+              </template>
+              {{ user.id }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <el-icon>
+                  <User/>
+                </el-icon>
+                Username
+              </template>
+              {{ user.name }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <el-icon>
+                  <Message/>
+                </el-icon>
+                Email
+              </template>
+              {{ user.email }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <el-icon>
+                  <Message/>
+                </el-icon>
+                Last login time
+              </template>
+              <p>{{ user.lastLoginTime }}</p>
+            </el-descriptions-item>
+          </el-descriptions>
         </el-card>
       </el-main>
       <el-footer>
@@ -39,7 +82,7 @@
 </template>
 
 <script setup>
-import {ArrowDown} from "@element-plus/icons-vue";
+import {ArrowDown, Key, Message, User} from "@element-plus/icons-vue";
 import Footer from "../components/Footer.vue";</script>
 
 <script>
@@ -71,13 +114,22 @@ export default {
   },
   mounted() {
     let auth = CheckSession()
-    if (auth != 0) {
+    if (auth === -1) {
       ElMessage({
         message: 'Authorization required',
         type: 'warning'
       })
       setTimeout(() => {
         this.$router.push({name: 'login'})
+      }, 1000)
+      return
+    } else if (auth === 1) {
+      ElMessage({
+        message: 'Not allowed',
+        type: 'warning'
+      })
+      setTimeout(() => {
+        this.$router.push({name: 'index'})
       }, 1000)
       return
     }
@@ -123,7 +175,7 @@ export default {
 
 <style scoped>
 
-#header{
+#header {
   background-color: var(--el-color-primary);
   border-bottom: 2px solid var(--el-border-color-base);
 }

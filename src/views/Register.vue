@@ -6,7 +6,8 @@
                         @back="this.$router.back()"></el-page-header>
       </el-header>
       <el-main>
-        <el-form id="auth-form" ref="registerForm" :disabled="isDisabled" :label-position="isLarge?'':'top'" :model="postForm"
+        <el-form id="auth-form" ref="registerForm" :disabled="isDisabled" :label-position="isLarge?'':'top'"
+                 :model="postForm"
                  :rules="rules" label-width="100px">
           <h1>Register</h1>
           <div class="line"></div>
@@ -164,6 +165,9 @@ export default {
           }
       )
     },
+    onResize() {
+      this.isLarge = document.documentElement.clientWidth > 550;
+    }
   },
   mounted() {
     if (CheckSession() !== -1) {
@@ -176,9 +180,10 @@ export default {
         this.$router.push({name: 'index'})
       }, 1000)
     }
-    window.addEventListener("resize", () => {
-      this.isLarge = document.documentElement.clientWidth > 550;
-    })
+    window.addEventListener("resize", this.onResize)
+  },
+  unmounted() {
+    window.removeEventListener("resize", this.onResize)
   }
 }
 </script>

@@ -118,7 +118,7 @@ export default {
                     type: 'success'
                   })
                   setTimeout(() => {
-                    this.$router.push({name: 'index'})
+                    this.$router.push(this.authScope === "admin" ? {name: 'admin'} : {name: 'index'})
                   }, 1000)
                 } else {
                   ElMessage({
@@ -166,6 +166,9 @@ export default {
           })
         }
       })
+    },
+    onResize() {
+      this.isLarge = document.documentElement.clientWidth > 550;
     }
   },
   mounted() {
@@ -186,12 +189,13 @@ export default {
         type: "warning"
       })
       setTimeout(() => {
-        this.$router.push({name: 'index'})
+        this.$router.push({name: 'admin'})
       }, 1000)
     }
-    window.addEventListener("resize", () => {
-      this.isLarge = document.documentElement.clientWidth > 550;
-    })
+    window.addEventListener("resize", this.onResize)
+  },
+  unmounted() {
+    window.removeEventListener("resize", this.onResize)
   }
 }
 </script>

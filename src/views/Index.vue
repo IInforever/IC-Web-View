@@ -10,6 +10,8 @@
       <br/>
       <router-link :to="{ name: 'login', query: {scope:'admin'}}">Admin Login</router-link>
       <br/>
+      <router-link :to="{ name: 'admin' }">Admin panel</router-link>
+      <br/>
       <el-link @click="logout">logout</el-link>
     </p>
     <Footer></Footer>

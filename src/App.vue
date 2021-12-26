@@ -1,10 +1,11 @@
 <script setup>
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import 'element-plus/dist/index.css'</script>
+import 'element-plus/dist/index.css'
+import './assets/transition.css'
+</script>
 
 <template>
-
   <router-view v-slot="{ Component }">
     <transition mode="out-in" name="fade">
       <component :is="Component"/>
@@ -21,12 +22,21 @@ html {
   color: #2c3e50;
 }
 
+#app {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 * {
   margin: 0;
   padding: 0;
 }
 
 a {
+  color: var(--el-text-color-regular);
   text-decoration: unset;
 }
 
@@ -38,13 +48,4 @@ a:hover {
   color: var(--el-color-primary);
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
 </style>

@@ -5,7 +5,7 @@
         <el-row justify="space-around" style="line-height: 60px">
           <el-col :span="6"></el-col>
           <el-col :span="6">
-            <h1 style=";color: aliceblue">Home</h1>
+            <h1 style="color: aliceblue">Home</h1>
           </el-col>
           <el-col :span="6" style="text-align: right">
             <el-dropdown @command="handleCommand">

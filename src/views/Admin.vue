@@ -2,12 +2,12 @@
   <div>
     <el-container>
       <el-header id="header">
-        <el-row justify="space-around" style="line-height: 60px">
-          <el-col :span="6"></el-col>
-          <el-col :span="6">
+        <el-row :gutter="10" style="line-height: 60px">
+          <el-col :md="1" ></el-col>
+          <el-col :md="21">
             <h1 style="color: aliceblue">Admin Panel</h1>
           </el-col>
-          <el-col :span="6" style="text-align: right">
+          <el-col :md="2" style="text-align: right">
             <el-dropdown>
               <span :style="{color: 'aliceblue',fontSize: 'var(--el-font-size-base)',fontWeight: 'bold'}"
                     class="el-dropdown-link">
@@ -29,12 +29,12 @@
         </el-row>
       </el-header>
       <el-container>
-        <el-aside width="200px">
+        <el-aside style="width: fit-content">
           <el-menu
               style="height: 100%"
               :default-active="this.$route.path"
-              router
-          >
+              :collapse="true"
+              router>
             <el-menu-item index="/admin/stat">
               <el-icon>
                 <Menu/>
@@ -74,8 +74,14 @@ import Footer from "../components/Footer.vue";</script>
 export default {
   name: "Admin",
   methods: {
+    onResize() {
+    }
   },
   mounted() {
+    window.addEventListener("resize", this.onResize)
+  },
+  unmounted() {
+    window.removeEventListener("resize", this.onResize)
   }
 }
 </script>
@@ -83,11 +89,17 @@ export default {
 <style scoped>
 #header {
   background-color: var(--el-color-primary);
-  border-bottom: 2px solid var(--el-border-color-base);
+  /*border-bottom: 2px solid var(--el-border-color-base);*/
+  box-shadow: var(--el-box-shadow-base);
+  z-index: 100;
 }
 
 .el-aside {
   height: calc(100vh - 120px)
 }
 
+.el-footer {
+  border-top: 1px solid var(--el-border-color-base);
+  background-color: #fafafa;
+}
 </style>

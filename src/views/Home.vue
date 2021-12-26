@@ -177,7 +177,8 @@ export default {
 
 #header {
   background-color: var(--el-color-primary);
-  border-bottom: 2px solid var(--el-border-color-base);
+  box-shadow: var(--el-box-shadow-base);
+  z-index: 100;
 }
 
 

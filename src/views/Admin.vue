@@ -11,7 +11,7 @@
             <h1 style="color: aliceblue;white-space: nowrap">Admin Panel</h1>
           </el-col>
           <el-col :sm="6" :xs="6" style="text-align: right">
-            <el-dropdown trigger="click">
+            <el-dropdown trigger="click" @command="handleCommand">
               <span :style="{color: 'aliceblue',fontSize: 'var(--el-font-size-base)',fontWeight: 'bold'}"
                     class="el-dropdown-link">
                 <el-icon style="vertical-align: middle">
@@ -50,7 +50,7 @@
               </el-icon>
               <span>Users</span>
             </el-menu-item>
-            <el-menu-item @click="menuCollapse" index="#">
+            <el-menu-item @click="menuCollapse" index="">
               <el-icon>
                 <MoreFilled/>
               </el-icon>
@@ -60,7 +60,7 @@
         </el-aside>
         <el-container>
           <el-main>
-            <router-view v-slot="{ Component }" name="content">
+            <router-view v-slot="{ Component }">
               <transition mode="out-in" name="fade">
                 <component :is="Component"/>
               </transition>
@@ -86,7 +86,7 @@ import {ElMessage} from "element-plus";
 export default {
   name: "Admin",
   data() {
-    return{
+    return {
       isLarge: window.innerWidth,
       collapse: true,
     }
@@ -96,21 +96,34 @@ export default {
     },
     menuCollapse() {
       this.collapse = !this.collapse
+    },
+    handleCommand(command) {
+      if (command === "logout") {
+        sessionStorage.removeItem("admin-token")
+        ElMessage({
+          message: 'logged out',
+          type: 'success'
+        })
+        setTimeout(() => {
+          this.$router.push({name: 'index'})
+        }, 1000)
+      }
     }
   },
   mounted() {
     window.addEventListener("resize", this.onResize)
     let auth = CheckSession()
     if (auth !== 1) {
-      ElMessage({
-        message: 'Admin Authorization required',
-        type: 'warning'
-      })
       setTimeout(() => {
-        this.$router.back()
+        this.$router.push({name: 'index'})
+        ElMessage({
+          message: 'Admin Authorization required',
+          type: 'warning'
+        })
       }, 1000)
     }
-  },
+  }
+  ,
   unmounted() {
     window.removeEventListener("resize", this.onResize)
   }
@@ -120,7 +133,6 @@ export default {
 <style scoped>
 #header {
   background-color: var(--el-color-primary);
-  /*border-bottom: 2px solid var(--el-border-color-base);*/
   box-shadow: var(--el-box-shadow-base);
   z-index: 100;
 }

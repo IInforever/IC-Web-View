@@ -25,26 +25,22 @@ const routes = [
         component: () => import('../views/Admin.vue'),
         children: [
             {
-                path: '',
-                name: 'admin-index',
-                components: {
-                    content: () =>import('../views/admin/Index.vue')
-                }
-            },
-            {
                 path: 'stat',
                 name: 'admin-stat',
-                components: {
-                    content: () => import('../views/admin/Stat.vue')
-                }
+                component: () => import('../views/admin/Stat.vue')
+
             },
             {
                 path: 'users',
                 name: 'admin-users',
-                components: {
-                    content: () => import('../views/admin/Users.vue')
-                }
-            }
+                component: () => import('../views/admin/Users.vue')
+
+            },
+            {
+                path: '',
+                name: 'admin-index',
+                component: () => import('../views/admin/Index.vue')
+            },
         ]
     }
 ]

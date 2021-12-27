@@ -118,7 +118,7 @@ export default {
                     type: 'success'
                   })
                   setTimeout(() => {
-                    this.$router.push(this.authScope === "admin" ? {name: 'admin'} : {name: 'index'})
+                    this.$router.push(this.authScope === "admin" ? {name: 'admin-index'} : {name: 'index'})
                   }, 1000)
                 } else {
                   ElMessage({

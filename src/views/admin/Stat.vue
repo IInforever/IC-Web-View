@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-empty></el-empty>
+    <el-empty description="temporarily empty"></el-empty>
   </div>
 </template>
 

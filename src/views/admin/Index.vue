@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Hello, Administrator</h1>
-    <el-empty></el-empty>
+    <el-empty description="temporarily empty"></el-empty>
   </div>
 </template>
 

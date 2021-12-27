@@ -1,7 +1,7 @@
 <template>
-  <p>&copy; {{ currentYear }}
+  <div>&copy; {{ currentYear }}
     <a :href="COM_MAIN_PAGE" style="line-height: 20px;vertical-align: center" target="_blank">{{ COM_NAME }}</a>
-  </p>
+  </div>
 </template>
 
 <script setup>
@@ -17,11 +17,11 @@ export default {
 </script>
 
 <style scoped>
-p {
+div {
   color: var(--el-text-color-regular);
   font-size: var(--el-font-size-base);
   font-weight: var(--el-font-weight-primary);
-  margin: 20px;
+  vertical-align: middle;
 }
 
 a:hover {

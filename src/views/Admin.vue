@@ -2,13 +2,16 @@
   <div>
     <el-container>
       <el-header id="header">
-        <el-row :gutter="10" style="line-height: 60px">
-          <el-col :md="1" ></el-col>
-          <el-col :md="21">
-            <h1 style="color: aliceblue">Admin Panel</h1>
+        <el-row style="line-height: 60px">
+          <el-col :sm="6" :xs="6" style="text-align: left">
+            <el-button circle type="primary" :icon="HomeFilled" @click="this.$router.push({name:'index'})">
+            </el-button>
           </el-col>
-          <el-col :md="2" style="text-align: right">
-            <el-dropdown>
+          <el-col :sm="12" :xs="12">
+            <h1 style="color: aliceblue;white-space: nowrap">Admin Panel</h1>
+          </el-col>
+          <el-col :sm="6" :xs="6" style="text-align: right">
+            <el-dropdown trigger="click">
               <span :style="{color: 'aliceblue',fontSize: 'var(--el-font-size-base)',fontWeight: 'bold'}"
                     class="el-dropdown-link">
                 <el-icon style="vertical-align: middle">
@@ -33,7 +36,7 @@
           <el-menu
               style="height: 100%"
               :default-active="this.$route.path"
-              :collapse="true"
+              :collapse="collapse"
               router>
             <el-menu-item index="/admin/stat">
               <el-icon>
@@ -46,6 +49,12 @@
                 <User/>
               </el-icon>
               <span>Users</span>
+            </el-menu-item>
+            <el-menu-item @click="menuCollapse" index="#">
+              <el-icon>
+                <MoreFilled/>
+              </el-icon>
+              <span>Collapse</span>
             </el-menu-item>
           </el-menu>
         </el-aside>
@@ -67,18 +76,40 @@
 </template>
 
 <script setup>
-import {ArrowDown, Menu, User, UserFilled} from "@element-plus/icons-vue";
+import {ArrowDown, HomeFilled, Menu, MoreFilled, User, UserFilled} from "@element-plus/icons-vue";
 import Footer from "../components/Footer.vue";</script>
 
 <script>
+import {CheckSession} from "../lib/auth-util";
+import {ElMessage} from "element-plus";
+
 export default {
   name: "Admin",
+  data() {
+    return{
+      isLarge: window.innerWidth,
+      collapse: true,
+    }
+  },
   methods: {
     onResize() {
+    },
+    menuCollapse() {
+      this.collapse = !this.collapse
     }
   },
   mounted() {
     window.addEventListener("resize", this.onResize)
+    let auth = CheckSession()
+    if (auth !== 1) {
+      ElMessage({
+        message: 'Admin Authorization required',
+        type: 'warning'
+      })
+      setTimeout(() => {
+        this.$router.back()
+      }, 1000)
+    }
   },
   unmounted() {
     window.removeEventListener("resize", this.onResize)
@@ -99,7 +130,9 @@ export default {
 }
 
 .el-footer {
-  border-top: 1px solid var(--el-border-color-base);
+  box-sizing: border-box;
+  border: 1px solid var(--el-border-color-base);
   background-color: #fafafa;
+  line-height: 59px;
 }
 </style>

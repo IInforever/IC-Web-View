@@ -8,7 +8,7 @@
             <h1 style="color: aliceblue">Home</h1>
           </el-col>
           <el-col :span="6" style="text-align: right">
-            <el-dropdown @command="handleCommand">
+            <el-dropdown @command="handleCommand" trigger="click">
               <span :style="{color: 'aliceblue',fontSize: 'var(--el-font-size-base)',fontWeight: 'bold'}"
                     class="el-dropdown-link">
               {{ user.name }}
@@ -101,7 +101,7 @@ export default {
   methods: {
     handleCommand(command) {
       if (command === "logout") {
-        sessionStorage.removeItem("auth-token")
+        localStorage.removeItem("auth-token")
         ElMessage({
           message: 'logged out',
           type: 'success'
@@ -136,7 +136,7 @@ export default {
 
     axios.get("/api/user", {
       headers: {
-        Authorization: sessionStorage.getItem('auth-token')
+        Authorization: localStorage.getItem('auth-token')
       }
     })
         .then((response) => {
@@ -169,7 +169,6 @@ export default {
           }
         })
   }
-
 }
 </script>
 
@@ -188,6 +187,10 @@ export default {
     width: 50%;
     min-width: 500px;
   }
+}
+
+.el-dropdown:hover {
+  cursor: pointer;
 }
 
 </style>

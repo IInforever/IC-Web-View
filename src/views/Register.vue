@@ -3,7 +3,7 @@
     <el-container>
       <el-header id="auth-header">
         <el-page-header id="auth-page-header" content="Register" title="Back"
-                        @back="this.$router.back()"></el-page-header>
+                        @back="this.$router.push({name:'index'})"></el-page-header>
       </el-header>
       <el-main>
         <el-form id="auth-form" ref="registerForm" :disabled="isDisabled" :label-position="isLarge?'':'top'"

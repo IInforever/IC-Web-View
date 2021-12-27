@@ -120,7 +120,7 @@ export default {
           console.log(data)
           axios.patch("/api/users/" + id, data, {
             headers: {
-              Authorization: sessionStorage.getItem('admin-token')
+              Authorization: localStorage.getItem('admin-token')
             }
           })
               .then((response) => {
@@ -183,7 +183,7 @@ export default {
     }
     axios.get("/api/users", {
       headers: {
-        Authorization: sessionStorage.getItem("admin-token")
+        Authorization: localStorage.getItem("admin-token")
       }
     })
         .then((response) => {

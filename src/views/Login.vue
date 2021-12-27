@@ -2,7 +2,7 @@
   <div>
     <el-container>
       <el-header id="auth-header">
-        <el-page-header id="auth-page-header" content="Login" title="Back" @back="this.$router.back()"></el-page-header>
+        <el-page-header id="auth-page-header" content="Login" title="Back" @back="this.$router.push({name:'index'})"></el-page-header>
       </el-header>
       <el-main>
         <el-form id="auth-form" ref="loginForm" :disabled="isDisabled" :label-position="isLarge?'':'top'"
@@ -109,9 +109,9 @@ export default {
                   let token = response.headers.authorization
                   this.isDisabled = true
                   if (this.authScope === "admin") {
-                    window.sessionStorage.setItem("admin-token", token)
+                    window.localStorage.setItem("admin-token", token)
                   } else {
-                    window.sessionStorage.setItem("auth-token", token)
+                    window.localStorage.setItem("auth-token", token)
                   }
                   ElMessage({
                     message: 'Login success',

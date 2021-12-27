@@ -10,12 +10,12 @@ export function CheckSession() {
     let sessions = ['auth-token', 'admin-token']
     let count = -1
     for (const index in sessions) {
-        let token = sessionStorage.getItem(sessions[index])
+        let token = localStorage.getItem(sessions[index])
         if (token == null)
             continue
         let data = DecodeJWT(token)
         if (data.exp * 1000 < Date.now()) {
-            sessionStorage.removeItem(sessions[index])
+            localStorage.removeItem(sessions[index])
             continue
         }
         count = parseInt(index)
@@ -31,7 +31,7 @@ export function UpdateToken(response) {
         let data = DecodeJWT(token)
         for (const i in subjects) {
             if (data.sub === subjects[i])
-                sessionStorage.setItem(sessions[i], token)
+                localStorage.setItem(sessions[i], token)
         }
     }
 }

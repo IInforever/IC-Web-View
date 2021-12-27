@@ -99,7 +99,7 @@ export default {
     },
     handleCommand(command) {
       if (command === "logout") {
-        sessionStorage.removeItem("admin-token")
+        localStorage.removeItem("admin-token")
         ElMessage({
           message: 'logged out',
           type: 'success'
@@ -110,20 +110,19 @@ export default {
       }
     }
   },
-  mounted() {
-    window.addEventListener("resize", this.onResize)
+  beforeMount() {
     let auth = CheckSession()
     if (auth !== 1) {
-      setTimeout(() => {
-        this.$router.push({name: 'index'})
-        ElMessage({
-          message: 'Admin Authorization required',
-          type: 'warning'
-        })
-      }, 1000)
+      this.$router.push({name: 'index'})
+      ElMessage({
+        message: 'Admin Authorization required',
+        type: 'warning'
+      })
     }
-  }
-  ,
+  },
+  mounted() {
+    window.addEventListener("resize", this.onResize)
+  },
   unmounted() {
     window.removeEventListener("resize", this.onResize)
   }
@@ -147,4 +146,9 @@ export default {
   background-color: #fafafa;
   line-height: 59px;
 }
+
+.el-dropdown:hover {
+  cursor: pointer;
+}
+
 </style>

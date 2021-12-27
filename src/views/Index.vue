@@ -27,8 +27,8 @@ import {ElMessage} from "element-plus";
 export default {
   methods: {
     logout() {
-      sessionStorage.removeItem("auth-token")
-      sessionStorage.removeItem("admin-token")
+      localStorage.removeItem("auth-token")
+      localStorage.removeItem("admin-token")
       ElMessage("Logged out")
     }
   }

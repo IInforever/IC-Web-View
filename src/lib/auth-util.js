@@ -35,3 +35,10 @@ export function UpdateToken(response) {
         }
     }
 }
+
+export function RemoveTokens() {
+    let keys = ['auth-token', 'admin-token']
+    for (const i of keys) {
+        localStorage.removeItem(i)
+    }
+}

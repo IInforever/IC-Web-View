@@ -20,7 +20,7 @@
         </el-table>
       </div>
     </transition>
-    <el-drawer ref="drawer" v-model="drawer" direction="rtl" title="Modify">
+    <el-drawer ref="drawer" v-model="drawer" :direction="isLarge?'rtl':'btt'" size="45%" title="Modify">
       <el-form ref="form" :model="rowData" :rules="rules" label-width="100px">
         <el-form-item label="ID">
           <el-input v-model="rowData.id" disabled></el-input>
@@ -95,12 +95,14 @@ export default {
       empty: false,
       rowData: {},
       currentRow: {},
-      drawer: false
+      drawer: false,
+      isLarge: window.innerWidth > 768,
     }
   },
   methods: {
     onResize() {
       this.tableHeight = window.innerHeight - 160;
+      this.isLarge = window.innerWidth > 768;
     },
     handleUpdate(row) {
       this.rowData = JSON.parse(JSON.stringify(row)) // deep copy

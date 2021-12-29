@@ -4,7 +4,7 @@
       <el-header id="header">
         <el-row style="line-height: 60px">
           <el-col :sm="6" :xs="6" style="text-align: left">
-            <el-button circle type="primary" :icon="HomeFilled" @click="this.$router.push({name:'index'})">
+            <el-button :icon="HomeFilled" circle type="primary" @click="this.$router.push({name:'index'})">
             </el-button>
           </el-col>
           <el-col :sm="12" :xs="12">
@@ -34,10 +34,10 @@
       <el-container>
         <el-aside style="width: fit-content">
           <el-menu
-              style="height: 100%"
-              :default-active="this.$route.path"
               :collapse="collapse"
-              router>
+              :default-active="this.$route.path"
+              router
+              style="height: 100%">
             <el-menu-item index="/admin/stat">
               <el-icon>
                 <Menu/>
@@ -50,11 +50,12 @@
               </el-icon>
               <span>Users</span>
             </el-menu-item>
-            <el-menu-item @click="menuCollapse" index="">
+            <el-menu-item index="" @click="menuCollapse">
               <el-icon>
-                <MoreFilled/>
+                <Expand v-if="collapse"/>
+                <Fold v-else/>
               </el-icon>
-              <span>Collapse</span>
+              <span>Fold Menu</span>
             </el-menu-item>
           </el-menu>
         </el-aside>
@@ -76,7 +77,7 @@
 </template>
 
 <script setup>
-import {ArrowDown, HomeFilled, Menu, MoreFilled, User, UserFilled} from "@element-plus/icons-vue";
+import {ArrowDown, Expand, Fold, HomeFilled, Menu, User, UserFilled} from "@element-plus/icons-vue";
 import Footer from "../components/Footer.vue";</script>
 
 <script>
@@ -87,12 +88,14 @@ export default {
   name: "Admin",
   data() {
     return {
-      isLarge: window.innerWidth,
-      collapse: true,
+      collapse: window.innerWidth < 768,
     }
   },
   methods: {
     onResize() {
+      if (window.innerWidth < 768) {
+        this.collapse = true;
+      }
     },
     menuCollapse() {
       this.collapse = !this.collapse

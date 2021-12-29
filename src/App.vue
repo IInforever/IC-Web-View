@@ -2,8 +2,7 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import 'element-plus/dist/index.css'
-import './assets/transition.css'
-</script>
+import './assets/transition.css'</script>
 
 <template>
   <router-view v-slot="{ Component }">
@@ -14,12 +13,13 @@ import './assets/transition.css'
 </template>
 
 <style>
-html {
+html, body {
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height: 100%;
 }
 
 #app {

@@ -2,7 +2,8 @@
   <div>
     <el-container>
       <el-header id="auth-header">
-        <el-page-header id="auth-page-header" content="Login" title="Back" @back="this.$router.push({name:'index'})"></el-page-header>
+        <el-page-header id="auth-page-header" content="Login" title="Back"
+                        @back="this.$router.push({name:'index'})"></el-page-header>
       </el-header>
       <el-main>
         <el-form id="auth-form" ref="loginForm" :disabled="isDisabled" :label-position="isLarge?'':'top'"

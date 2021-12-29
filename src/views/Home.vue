@@ -8,7 +8,7 @@
             <h1 style="color: aliceblue">Home</h1>
           </el-col>
           <el-col :span="6" style="text-align: right">
-            <el-dropdown @command="handleCommand" trigger="click">
+            <el-dropdown trigger="click" @command="handleCommand">
               <span :style="{color: 'aliceblue',fontSize: 'var(--el-font-size-base)',fontWeight: 'bold'}"
                     class="el-dropdown-link">
               {{ user.name }}
@@ -32,9 +32,9 @@
             Hello, <span style="text-decoration: underline;font-weight: bold">{{ user.name }}</span>
           </h2>
           <el-descriptions
-              title="User info"
-              column="1"
-              border>
+              :column="1"
+              border
+              title="User info">
             <el-descriptions-item>
               <template #label>
                 <el-icon>
@@ -181,11 +181,11 @@ export default {
 }
 
 
-@media (min-width: 550px) {
+@media (min-width: 600px) {
   #main-card {
     margin: 0 auto;
     width: 50%;
-    min-width: 500px;
+    min-width: 550px;
   }
 }
 

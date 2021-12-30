@@ -1,10 +1,17 @@
+<!--
+  - Copyright (c) IInfo 2021.
+  -->
+
 <template>
   <div>
     <el-container>
       <el-header id="header">
         <el-row justify="space-around" style="line-height: 60px">
-          <el-col :span="6"></el-col>
-          <el-col :span="6">
+          <el-col :span="6" style="text-align: left;">
+            <el-button :icon="HomeFilled" circle type="primary" @click="this.$router.push({name:'index'})">
+            </el-button>
+          </el-col>
+          <el-col :span="12">
             <h1 style="color: aliceblue">Home</h1>
           </el-col>
           <el-col :span="6" style="text-align: right">
@@ -82,7 +89,7 @@
 </template>
 
 <script setup>
-import {ArrowDown, Key, Message, User} from "@element-plus/icons-vue";
+import {ArrowDown, Key, Message, User,HomeFilled} from "@element-plus/icons-vue";
 import Footer from "../components/Footer.vue";</script>
 
 <script>

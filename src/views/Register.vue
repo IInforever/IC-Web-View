@@ -1,3 +1,7 @@
+<!--
+  - Copyright (c) IInfo 2022.
+  -->
+
 <template>
   <div>
     <el-container>
@@ -6,9 +10,8 @@
                         @back="this.$router.push({name:'index'})"></el-page-header>
       </el-header>
       <el-main>
-        <el-form id="auth-form" ref="registerForm" :disabled="isDisabled" :label-position="isLarge?'':'top'"
-                 :model="postForm"
-                 :rules="rules" label-width="100px">
+        <el-form id="auth-form" ref="registerForm" v-loading="loading" :disabled="isDisabled"
+                 :label-position="isLarge?'':'top'" :model="postForm" :rules="rules" label-width="100px">
           <h1>Register</h1>
           <div class="line"></div>
           <el-form-item label="Username" prop="name">
@@ -23,6 +26,8 @@
             <el-input v-model="postForm.passwd" type="password"></el-input>
           </el-form-item>
           <div v-if="isLarge" class="placeholder"></div>
+          <vue-recaptcha ref="recaptcha" :recaptchaHost="RECAPTCHA_HOST" :sitekey="SITE_KEY" size="invisible"
+                         @error="onError" @expred="onExpired" @render="onRender" @verify="onVerify"></vue-recaptcha>
           <el-button :loading="isLoading" type="primary" @click="submit">
             Submit
             <el-icon class="el-icon-arrow-right">
@@ -42,6 +47,8 @@
 import "../assets/auth-form.css"
 import {Right} from "@element-plus/icons-vue";
 import Footer from "../components/Footer.vue";
+import {VueRecaptcha} from "vue-recaptcha";
+import {RECAPTCHA_HOST, SITE_KEY} from "../config/config";
 
 const rules = {
   name: [
@@ -100,7 +107,10 @@ export default {
         email: '',
         passwd: '',
       },
-      isDisabled: false
+      isDisabled: false,
+      loading: true,
+      isRecaptchaExpired: true,
+      recaptchaResponse: '',
     }
   },
   methods: {
@@ -109,13 +119,21 @@ export default {
       this.$refs.registerForm.validate((valid) => {
             if (valid) {
               // start loading
-              let timer = setTimeout(() => {
-                this.isLoading = true
-              }, 300)
-              axios.post("/api/register", this.$data.postForm)
+              if (this.isRecaptchaExpired) {
+                this.$refs.recaptcha.execute()
+                return
+              }
+              this.isLoading = true
+              axios.post("/api/register", this.$data.postForm, {
+                headers: {
+                  "Recaptcha-Token": this.recaptchaResponse
+                }
+              })
                   .then((response) => {
-                    clearTimeout(timer)
-                    this.isLoading = false
+                    setTimeout(() => {
+                      this.recaptchaReset()
+                      this.isLoading = false
+                    }, 1000)
                     this.isDisabled = true
                     ElMessage({
                       message: 'User registered',
@@ -126,25 +144,33 @@ export default {
                     }, 1000)
                   })
                   .catch((error) => {
-                        clearTimeout(timer)
-                        this.isLoading = false
-                        if (error.response) {
-                          let status = error.response.status
-                          if (status === 400 && error.response.data['code'] === 21) {
-                            ElMessage({
-                              message: 'Register fail: username or email is already taken',
-                              type: 'error'
-                            })
-                          } else if (status >= 500) {
-                            ElMessage({
-                              message: 'Register fail: server error',
-                              type: 'error'
-                            })
-                          } else {
-                            ElMessage({
-                              message: 'Register fail: unknown error',
-                              type: 'error'
-                            })
+                    setTimeout(() => {
+                      this.recaptchaReset()
+                      this.isLoading = false
+                    }, 1000)
+                    if (error.response) {
+                      let status = error.response.status
+                      if (status === 400) {
+                        if (error.response.data['code'] === 21)
+                          ElMessage({
+                            message: 'Register fail: username or email is already taken',
+                            type: 'error'
+                          })
+                        else if (error.response.data['code'] >= 23 && error.response.data['code'] <= 25)
+                          ElMessage({
+                            message: 'Register fail: Recaptcha validation fail',
+                            type: 'error'
+                          })
+                      } else if (status >= 500) {
+                        ElMessage({
+                          message: 'Register fail: server error',
+                          type: 'error'
+                        })
+                      } else {
+                        ElMessage({
+                          message: 'Register fail: unknown error',
+                          type: 'error'
+                        })
                           }
                         } else if (error.request) {
                           ElMessage({
@@ -167,6 +193,29 @@ export default {
     },
     onResize() {
       this.isLarge = document.documentElement.clientWidth > 550;
+    },
+    recaptchaReset() {
+      this.isRecaptchaExpired = true
+      this.$refs.recaptcha.reset()
+    },
+    onRender(id) {
+      this.loading = false
+      console.log("[recaptcha] loaded. (" + id + ")")
+    },
+    onVerify(response) {
+      this.recaptchaResponse = response
+      this.isRecaptchaExpired = false
+      this.submit()
+    },
+    onError() {
+      ElMessage({
+        message: "Recaptcha check fail",
+        type: 'warning'
+      })
+      this.isLoading = false
+    },
+    onExpired() {
+      this.isRecaptchaExpired = true
     }
   },
   mounted() {

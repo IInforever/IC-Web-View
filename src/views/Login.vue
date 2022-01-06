@@ -1,3 +1,7 @@
+<!--
+  - Copyright (c) IInfo 2022.
+  -->
+
 <template>
   <div>
     <el-container>
@@ -6,7 +10,8 @@
                         @back="this.$router.push({name:'index'})"></el-page-header>
       </el-header>
       <el-main>
-        <el-form id="auth-form" ref="loginForm" :disabled="isDisabled" :label-position="isLarge?'':'top'"
+        <el-form id="auth-form" ref="loginForm" v-loading="loading" :disabled="isDisabled"
+                 :label-position="isLarge?'':'top'"
                  :model="postForm"
                  :rules="rules" label-width="100px">
           <h1><span v-if="authScope==='admin'">Admin </span>Login</h1>
@@ -19,6 +24,8 @@
             <el-input v-model="postForm.passwd" type="password"></el-input>
           </el-form-item>
           <div v-if="isLarge" class="placeholder"></div>
+          <vue-recaptcha ref="recaptcha" :recaptchaHost="RECAPTCHA_HOST" :sitekey="SITE_KEY" size="invisible"
+                         @error="onError" @expred="onExpired" @render="onRender" @verify="onVerify"></vue-recaptcha>
           <el-button :loading="isLoading" type="primary" @click="submit">
             Submit
             <el-icon class="el-icon-arrow-right">
@@ -38,6 +45,8 @@
 import "../assets/auth-form.css"
 import {Right} from "@element-plus/icons-vue"
 import Footer from "../components/Footer.vue";
+import {VueRecaptcha} from "vue-recaptcha";
+import {RECAPTCHA_HOST, SITE_KEY} from "../config/config";
 
 const rules = {
   name: [
@@ -85,7 +94,10 @@ export default {
       isLarge: document.documentElement.clientWidth > 550,
       isLoading: false,
       authScope: this.$route.query.scope,
-      isDisabled: false
+      isDisabled: false,
+      loading: true,
+      isRecaptchaExpired: true,
+      recaptchaResponse: '',
     }
   },
   methods: {
@@ -93,19 +105,27 @@ export default {
       this.$refs.loginForm.validate((valid) => {
         // check inputs
         if (valid) {
-          let time = setTimeout(() => {
-            this.isLoading = true
-          }, 300)
+          if (this.isRecaptchaExpired) {
+            this.$refs.recaptcha.execute()
+            return
+          }
+          this.isLoading = true
           let url
           if (this.authScope === 'admin')
             url = "/api/admin/login"
           else
             url = "/api/login"
-          axios.post(url, this.$data.postForm)
+          axios.post(url, this.$data.postForm, {
+            headers: {
+              "Recaptcha-Token": this.recaptchaResponse
+            }
+          })
               .then((response) => {
                 // success
-                clearTimeout(time)
-                this.isLoading = false
+                setTimeout(() => {
+                  this.recaptchaReset()
+                  this.isLoading = false
+                }, 1000)
                 if (response.headers.authorization) {
                   let token = response.headers.authorization
                   this.isDisabled = true
@@ -130,13 +150,20 @@ export default {
               })
               .catch((error) => {
                 // error
-                clearTimeout(time)
-                this.isLoading = false
+                setTimeout(() => {
+                  this.recaptchaReset()
+                  this.isLoading = false
+                }, 1000)
                 if (error.response) {
                   let status = error.response.status
                   if (status === 404 || status === 403) {
                     ElMessage({
                       message: 'Login fail: username or password error',
+                      type: 'error'
+                    })
+                  } else if (status === 400 && error.response.data) {
+                    ElMessage({
+                      message: 'Login fail: Recaptcha validation fail',
                       type: 'error'
                     })
                   } else if (status >= 500) {
@@ -168,8 +195,32 @@ export default {
         }
       })
     },
+    recaptchaReset() {
+      this.isRecaptchaExpired = true
+      this.$refs.recaptcha.reset()
+    },
     onResize() {
       this.isLarge = document.documentElement.clientWidth > 550;
+    },
+    onRender(id) {
+      this.loading = false
+      console.log("[recaptcha] loaded. (" + id + ")")
+    },
+    onVerify(response) {
+      this.recaptchaResponse = response
+      this.isRecaptchaExpired = false
+      this.submit()
+    },
+    onError() {
+      ElMessage({
+        message: "Recaptcha check fail",
+        type: 'warning'
+      })
+      this.isLoading = false
+    },
+    onExpired() {
+      this.isRecaptchaExpired = true
+      this.isLoading = false
     }
   },
   mounted() {
@@ -193,6 +244,13 @@ export default {
         this.$router.push({name: 'admin'})
       }, 1000)
     }
+    setTimeout(() => {
+      if (this.loading)
+        ElMessage({
+          message: 'Error: Recaptcha component load fail',
+          type: 'error'
+        })
+    }, 5000)
     window.addEventListener("resize", this.onResize)
   },
   unmounted() {

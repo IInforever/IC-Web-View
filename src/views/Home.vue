@@ -1,5 +1,5 @@
 <!--
-  - Copyright (c) IInfo 2021.
+  - Copyright (c) IInfo 2022.
   -->
 
 <template>
@@ -72,11 +72,11 @@
             <el-descriptions-item>
               <template #label>
                 <el-icon>
-                  <Message/>
+                  <Timer/>
                 </el-icon>
-                Last login time
+                Create time
               </template>
-              <p>{{ user.lastLoginTime }}</p>
+              <p>{{ user.createTime }}</p>
             </el-descriptions-item>
           </el-descriptions>
         </el-card>
@@ -89,7 +89,7 @@
 </template>
 
 <script setup>
-import {ArrowDown, Key, Message, User,HomeFilled} from "@element-plus/icons-vue";
+import {ArrowDown, HomeFilled, Key, Message, Timer, User} from "@element-plus/icons-vue";
 import Footer from "../components/Footer.vue";</script>
 
 <script>
@@ -101,7 +101,7 @@ export default {
   name: "Home",
   data() {
     return {
-      user: {},
+      user: {createTime: null},
       isLoading: true,
     }
   },

@@ -1,3 +1,7 @@
+<!--
+  - Copyright (c) IInfo 2022.
+  -->
+
 <template>
   <div style="height: 100%">
     <el-container>
@@ -34,26 +38,26 @@
       </el-header>
       <el-main>
         <div id="placeholder">
-          <el-card id="main">
-            <h1 id="title">Hello, ICB</h1>
+          <el-card id="main" v-loading="loading">
+            <h1 id="title">Hello, IClipboard</h1>
             <el-divider></el-divider>
-            <el-form ref="input" :model="postForm" :rules="rules" style="text-align: left">
-              <el-form-item prop="text">
-                <el-input v-model="postForm.text" :autosize="{minRows:10, maxRows:30}" maxlength="5000"
+            <el-form ref="input" :model="postForm" :rules="rules" :status-icon="false" style="text-align: left">
+              <el-form-item prop="paste">
+                <el-input v-model="postForm.paste" :autosize="{minRows:10, maxRows:30}" maxlength="5000"
                           placeholder="PUT TEXT HERE" resize="none"
                           show-word-limit type="textarea"></el-input>
               </el-form-item>
-              <el-form-item label="Subject" label-width="70px" prop="subject">
-                <el-input v-model="postForm.subject" maxlength="20" show-word-limit></el-input>
+              <el-form-item label="Subject" label-width="80px" prop="title">
+                <el-input v-model="postForm.title" maxlength="20" show-word-limit></el-input>
               </el-form-item>
-              <el-form-item label="Type" label-width="70px" prop="type">
+              <el-form-item label="Type" label-width="80px" prop="type">
                 <el-select v-model="postForm.type" placeholder="Type">
                   <el-option v-for="item in typeOptions" :key="item.value" :label="item.label"
                              :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="Expire" label-width="70px" prop="time">
-                <el-select v-model="postForm.time">
+              <el-form-item label="Expire" label-width="80px" prop="expireDuration">
+                <el-select v-model="postForm.expireDuration">
                   <el-option label="10min" value="600"></el-option>
                   <el-option label="30min" value="1800"></el-option>
                   <el-option label="1h" value="3600"></el-option>
@@ -63,17 +67,28 @@
                   <el-option label="1day" value="86400"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="Private" label-width="70px">
+
+              <el-form-item label="Password" label-width="80px" prop="passwd">
+                <el-input v-model="postForm.passwd" :show-password="true" maxlength="32" type="password"></el-input>
+              </el-form-item>
+
+              <el-form-item label="Private" label-width="80px">
                 <el-tooltip :disabled="auth === 0" content="login require" effect="light" placement="right">
-                  <el-switch v-model="private" :disabled="auth !== 0" active-color="#13ce66"
+                  <el-switch v-model="isPrivate" :disabled="auth !== 0 || anonymous" active-color="#13ce66"
                              active-text="Y" inactive-text="N" inline-prompt></el-switch>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label-width="70px" label="Password" prop="passwd">
-                <el-input v-model="postForm.passwd" type="password" maxlength="32"></el-input>
+
+              <el-form-item v-if="auth === 0" label="Anonymous" label-width="80px">
+                <el-switch v-model="anonymous" :disabled="auth !== 0" active-color="#13ce66"
+                           active-text="Y" inactive-text="N" inline-prompt @click="isPrivate = false"></el-switch>
               </el-form-item>
+
+              <vue-recaptcha ref="recaptcha" :recaptchaHost="RECAPTCHA_HOST" :sitekey="SITE_KEY" size="invisible"
+                             @error="onError" @expred="onExpired" @render="onRender" @verify="onVerify"></vue-recaptcha>
+
               <el-form-item style="text-align: center">
-                <el-button type="primary" @click="create">Create</el-button>
+                <el-button :loading="isLoading" type="primary" @click="create">Create</el-button>
               </el-form-item>
             </el-form>
           </el-card>
@@ -87,12 +102,188 @@
   </div>
 </template>
 
+<script>
+import "element-plus/dist/index.css"
+import {CheckSession, RemoveTokens} from "../lib/auth-util";
+import {ElMessage} from "element-plus";
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      auth: CheckSession(),
+      postForm: {
+        paste: '',
+        type: 'raw',
+        passwd: '',
+        expireDuration: '600',
+        title: '',
+      },
+      isPrivate: false,
+      anonymous: CheckSession() !== 0,
+      loading: true,
+      isLoading: false,
+      isRecaptchaExpired: true,
+      recaptchaResponse: '',
+    }
+  },
+  methods: {
+    logout() {
+      RemoveTokens()
+      this.auth = -1
+      this.isPrivate = false
+      this.anonymous = true
+      ElMessage({
+        message: 'logged out',
+        type: 'success',
+      })
+    },
+    create() {
+      this.$refs.input.validate((valid) => {
+        if (valid) {
+
+          if (this.isRecaptchaExpired) {
+            this.$refs.recaptcha.execute()
+            return
+          }
+          this.isLoading = true
+
+          let url, headers
+          if (this.anonymous) {
+            url = "/api/pastes/anonymous"
+            headers = {
+              "Recaptcha-Token": this.recaptchaResponse,
+            }
+          } else {
+            url = "/api/pastes"
+            headers = {
+              "Recaptcha-Token": this.recaptchaResponse,
+              "Authorization": localStorage.getItem("auth-token")
+            }
+          }
+
+          // remove blank
+          let data = {}
+          for (const key in this.postForm) {
+            if (this.postForm[key] !== "")
+              data[key] = this.postForm[key]
+          }
+          if (!this.anonymous && this.auth === 0)
+            data.isPrivate = this.isPrivate
+
+
+          axios.post(url, data, {
+            headers: headers
+          })
+              .then((response) => {
+                setTimeout(() => {
+                  this.recaptchaReset()
+                  this.isLoading = false
+                }, 1000)
+                let id = response.data.id.toString(36)
+                ElMessage({
+                  message: 'Success, ID: ' + id,
+                  type: "success"
+                })
+              })
+              .catch((error) => {
+                setTimeout(() => {
+                  this.recaptchaReset()
+                  this.isLoading = false
+                }, 1000)
+                if (error.response) {
+                  let status = error.response.status
+                  if (status === 404 || status === 403) {
+                    ElMessage({
+                      message: 'Login fail: username or password error',
+                      type: 'error'
+                    })
+                  } else if (status === 400) {
+                    if (error.response.data['code'] >= 23 && error.response.data['code'] <= 25)
+                      ElMessage({
+                        message: 'Register fail: Recaptcha validation fail',
+                        type: 'error'
+                      })
+                    else
+                      ElMessage({
+                        message: 'Bad request, please refresh page',
+                        type: 'error'
+                      })
+                  } else if (status >= 500) {
+                    ElMessage({
+                      message: 'Login fail: server error',
+                      type: 'error'
+                    })
+                  } else {
+                    ElMessage({
+                      message: 'Login fail: unknown error',
+                      type: 'error'
+                    })
+                  }
+                } else if (error.request) {
+                  ElMessage({
+                    message: 'Error:' + error.message,
+                    type: "error"
+                  })
+                } else {
+                  console.log(error)
+                }
+              })
+
+        } else {
+          ElMessage({
+            message: 'Invalid inputs',
+            type: 'warning'
+          })
+        }
+      })
+    },
+    recaptchaReset() {
+      this.isRecaptchaExpired = true
+      this.$refs.recaptcha.reset()
+    },
+    onRender(id) {
+      this.loading = false
+      console.log("[recaptcha] loaded. (" + id + ")")
+    },
+    onVerify(response) {
+      this.recaptchaResponse = response
+      this.isRecaptchaExpired = false
+      this.create()
+    },
+    onError() {
+      ElMessage({
+        message: "Recaptcha check fail",
+        type: 'warning'
+      })
+      this.isLoading = false
+    },
+    onExpired() {
+      this.isRecaptchaExpired = true
+      this.isLoading = false
+    }
+  },
+  mounted() {
+    setTimeout(() => {
+      if (this.loading)
+        ElMessage({
+          message: 'Error: Recaptcha component load fail',
+          type: 'error'
+        })
+    }, 5000)
+  },
+}
+</script>
+
 <script setup>
+import {Timer} from "@element-plus/icons-vue";
+import {SITE_KEY, RECAPTCHA_HOST} from "../config/config";
 import Footer from "../components/Footer.vue";
+import {VueRecaptcha} from "vue-recaptcha";
 import {CheckSession} from "../lib/auth-util";
 
 const rules = {
-  text: {
+  paste: {
     required: true,
     message: 'Please input text',
     trigger: 'blur',
@@ -101,7 +292,7 @@ const rules = {
     required: true,
     message: 'Please select type',
   },
-  time: {
+  expireDuration: {
     required: true,
     message: 'Please select expire time',
   },
@@ -111,13 +302,12 @@ const rules = {
     message: 'Length should be 4 to 32',
     trigger: 'blur',
   },
-  subject: {
+  title: {
     max: 20,
     message: 'Subject length should be less than 20',
     trigger: 'blur',
   }
 }
-
 
 const typeOptions = [
   {
@@ -167,50 +357,6 @@ const typeOptions = [
 ]
 </script>
 
-<script>
-import {CheckSession, RemoveTokens} from "../lib/auth-util";
-import {ElMessage} from "element-plus";
-
-export default {
-  methods: {
-    logout() {
-      RemoveTokens()
-      this.auth = -1
-      this.private = false
-      ElMessage({
-        message: 'logged out',
-        type: 'success',
-      })
-    },
-    create() {
-      this.$refs.input.validate((valid) => {
-        if (valid) {
-          ElMessage("success")
-        } else {
-          ElMessage({
-            message: 'Invalid inputs',
-            type: 'warning'
-          })
-        }
-      })
-    }
-  },
-  data() {
-    return {
-      auth: CheckSession(),
-      postForm: {
-        text: '',
-        type: 'raw',
-        passwd: '',
-        time: '600',
-        subject: '',
-      },
-      private: false,
-    }
-  }
-}
-</script>
-
 <style scoped>
 #title {
   margin: 20px;
@@ -255,7 +401,6 @@ export default {
   margin: 0 auto;
   flex: 0 0 auto;
 }
-
 
 .header-button {
   font-weight: bold;

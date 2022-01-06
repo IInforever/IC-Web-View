@@ -13,6 +13,7 @@
     "element-plus": "^1.2.0-beta.6",
     "sass": "^1.45.1",
     "vue": "^3.2.26",
+    "vue-recaptcha": "^2.0.1",
     "vue-router": "4",
     "vuex": "^4.0.2"
   },

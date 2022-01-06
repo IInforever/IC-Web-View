@@ -1,3 +1,7 @@
+<!--
+  - Copyright (c) IInfo 2022.
+  -->
+
 <template>
   <div>
     <transition mode="out-in" name="fade">
@@ -121,7 +125,7 @@ export default {
             passwd: this.rowData.passwd,
           }
           console.log(data)
-          axios.patch("/api/users/" + id, data, {
+          axios.patch("/api/admin/users/" + id, data, {
             headers: {
               Authorization: localStorage.getItem('admin-token')
             }
@@ -130,7 +134,7 @@ export default {
                 UpdateToken(response)
                 if (data.passwd) {
                   // update row
-                  axios.get("/api/users/" + id, {
+                  axios.get("/api/admin/users/" + id, {
                     headers: {
                       Authorization: localStorage.getItem("admin-token")
                     }
@@ -183,7 +187,7 @@ export default {
             type: 'warning',
           }
       ).then(() => {
-        axios.delete("/api/users/" + id, {
+        axios.delete("/api/admin/users/" + id, {
           headers: {
             Authorization: localStorage.getItem("admin-token")
           }
@@ -243,7 +247,7 @@ export default {
       })
       return
     }
-    axios.get("/api/users", {
+    axios.get("/api/admin/users", {
       headers: {
         Authorization: localStorage.getItem("admin-token")
       }

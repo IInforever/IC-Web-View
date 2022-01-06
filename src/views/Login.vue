@@ -247,7 +247,7 @@ export default {
     setTimeout(() => {
       if (this.loading)
         ElMessage({
-          message: 'Error: Recaptcha component load fail',
+          message: 'Error: Fail to load recaptcha components',
           type: 'error'
         })
     }, 5000)

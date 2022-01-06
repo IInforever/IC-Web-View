@@ -230,6 +230,13 @@ export default {
       }, 1000)
     }
     window.addEventListener("resize", this.onResize)
+    setTimeout(() => {
+      if (this.loading)
+        ElMessage({
+          message: 'Error: Fail to load recaptcha components',
+          type: 'error'
+        })
+    }, 5000)
   },
   unmounted() {
     window.removeEventListener("resize", this.onResize)

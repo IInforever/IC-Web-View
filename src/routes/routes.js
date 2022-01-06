@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) IInfo 2022.
+ */
+
 const routes = [
     {
         path: '/',
@@ -21,6 +25,14 @@ const routes = [
         component: () => import('../views/Register.vue'),
         meta: {
             title: 'Sign up'
+        }
+    },
+    {
+        path: '/p/:id',
+        name: 'pastes',
+        component: () => import('../views/Paste.vue'),
+        meta: {
+            title: 'Clipboard'
         }
     },
     {
@@ -57,6 +69,11 @@ const routes = [
                 component: () => import('../views/admin/Index.vue')
             },
         ]
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'notfound',
+        component: () => import('../views/NotFound.vue')
     }
 ]
 

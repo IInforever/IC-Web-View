@@ -3,107 +3,64 @@
   -->
 
 <template>
-  <div style="height: 100%">
-    <el-container>
-      <el-header>
-        <el-row style="line-height: 60px">
-          <el-col :sm="12" :xs="12" style="text-align: left">
-            <a href="/"
-               style="color: white;font-weight: bold;font-size: var(--el-font-size-extra-large);">IClipboard</a>
-          </el-col>
-          <el-col :sm="12" :xs="12" style="text-align: right;">
-            <div v-if="auth===-1">
-              <el-button class="header-button" size="small" type="primary" @click="$router.push({name:'login'})">
-                Login
-              </el-button>
-              <el-button class="header-button" size="small"
-                         @click="$router.push({name:'register'})">
-                Sign up
-              </el-button>
-            </div>
-            <div v-else>
-              <el-button-group>
-                <el-button class="header-button" size="small" type="primary"
-                           @click="$router.push(auth===0?{name:'home'}:{name:'admin-index'})">
-                  {{ auth === 0 ? 'Home' : 'Panel' }}
-                </el-button>
-                <el-button class="header-button" size="small" type="primary"
-                           @click="logout">
-                  Logout
-                </el-button>
-              </el-button-group>
-            </div>
-          </el-col>
-        </el-row>
-      </el-header>
-      <el-main>
-        <div id="placeholder">
-          <el-card id="main" v-loading="loading">
-            <h1 id="title">Hello, IClipboard</h1>
-            <el-divider></el-divider>
-            <el-form ref="input" :model="postForm" :rules="rules" :status-icon="false" style="text-align: left">
-              <el-form-item prop="paste">
-                <el-input v-model="postForm.paste" :autosize="{minRows:10, maxRows:30}" maxlength="5000"
-                          placeholder="PUT TEXT HERE" resize="none"
-                          show-word-limit type="textarea"></el-input>
-              </el-form-item>
-              <el-form-item label="Subject" label-width="80px" prop="title">
-                <el-input v-model="postForm.title" maxlength="20" show-word-limit></el-input>
-              </el-form-item>
-              <el-form-item label="Type" label-width="80px" prop="type">
-                <el-select v-model="postForm.type" placeholder="Type">
-                  <el-option v-for="item in typeOptions" :key="item.value" :label="item.label"
-                             :value="item.value"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="Expire" label-width="80px" prop="expireDuration">
-                <el-select v-model="postForm.expireDuration">
-                  <el-option label="10min" value="600"></el-option>
-                  <el-option label="30min" value="1800"></el-option>
-                  <el-option label="1h" value="3600"></el-option>
-                  <el-option label="2h" value="3600"></el-option>
-                  <el-option label="5h" value="18000"></el-option>
-                  <el-option label="12h" value="43200"></el-option>
-                  <el-option label="1day" value="86400"></el-option>
-                </el-select>
-              </el-form-item>
+  <BasicFramework :auth="auth" :loading="loading" title="Hello, IClipboard"
+                  @home="$router.push(auth===0?{name:'home'}:{name:'admin-index'})"
+                  @login="$router.push({name:'login'})" @logout="logout"
+                  @register="$router.push({name:'register'})">
+    <el-form ref="input" :model="postForm" :rules="rules" :status-icon="false" style="text-align: left">
+      <el-form-item prop="paste">
+        <el-input v-model="postForm.paste" :autosize="{minRows:10, maxRows:30}" maxlength="5000"
+                  placeholder="PUT TEXT HERE" resize="none"
+                  show-word-limit type="textarea"></el-input>
+      </el-form-item>
+      <el-form-item label="Subject" label-width="80px" prop="title">
+        <el-input v-model="postForm.title" maxlength="20" show-word-limit></el-input>
+      </el-form-item>
+      <el-form-item label="Type" label-width="80px" prop="type">
+        <el-select v-model="postForm.type" placeholder="Type">
+          <el-option v-for="item in typeOptions" :key="item.value" :label="item.label"
+                     :value="item.value"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Expire" label-width="80px" prop="expireDuration">
+        <el-select v-model="postForm.expireDuration">
+          <el-option label="10min" value="600"></el-option>
+          <el-option label="30min" value="1800"></el-option>
+          <el-option label="1h" value="3600"></el-option>
+          <el-option label="2h" value="3600"></el-option>
+          <el-option label="5h" value="18000"></el-option>
+          <el-option label="12h" value="43200"></el-option>
+          <el-option label="1day" value="86400"></el-option>
+        </el-select>
+      </el-form-item>
 
-              <el-form-item label="Password" label-width="80px" prop="passwd">
-                <el-input v-model="postForm.passwd" :show-password="true" maxlength="32" type="password"></el-input>
-              </el-form-item>
+      <el-form-item label="Password" label-width="80px" prop="passwd">
+        <el-input v-model="postForm.passwd" :show-password="true" maxlength="32" type="password"></el-input>
+      </el-form-item>
 
-              <el-form-item label="Private" label-width="80px">
-                <el-tooltip :disabled="auth === 0" content="login require" effect="light" placement="right">
-                  <el-switch v-model="isPrivate" :disabled="auth !== 0 || anonymous" active-color="#13ce66"
-                             active-text="Y" inactive-text="N" inline-prompt></el-switch>
-                </el-tooltip>
-              </el-form-item>
+      <el-form-item label="Private" label-width="80px">
+        <el-tooltip :disabled="auth === 0" content="login require" effect="light" placement="right">
+          <el-switch v-model="isPrivate" :disabled="auth !== 0 || anonymous" active-color="#13ce66"
+                     active-text="Y" inactive-text="N" inline-prompt></el-switch>
+        </el-tooltip>
+      </el-form-item>
 
-              <el-form-item v-if="auth === 0" label="Anonymous" label-width="80px">
-                <el-switch v-model="anonymous" :disabled="auth !== 0" active-color="#13ce66"
-                           active-text="Y" inactive-text="N" inline-prompt @click="isPrivate = false"></el-switch>
-              </el-form-item>
+      <el-form-item v-if="auth === 0" label="Anonymous" label-width="80px">
+        <el-switch v-model="anonymous" :disabled="auth !== 0" active-color="#13ce66"
+                   active-text="Y" inactive-text="N" inline-prompt @click="isPrivate = false"></el-switch>
+      </el-form-item>
 
-              <vue-recaptcha ref="recaptcha" :recaptchaHost="RECAPTCHA_HOST" :sitekey="SITE_KEY" size="invisible"
-                             @error="onError" @expred="onExpired" @render="onRender" @verify="onVerify"></vue-recaptcha>
+      <vue-recaptcha ref="recaptcha" :recaptchaHost="RECAPTCHA_HOST" :sitekey="SITE_KEY" size="invisible"
+                     @error="onError" @expred="onExpired" @render="onRender" @verify="onVerify"></vue-recaptcha>
 
-              <el-form-item style="text-align: center">
-                <el-button :loading="isLoading" type="primary" @click="create">Create</el-button>
-              </el-form-item>
-            </el-form>
-          </el-card>
-        </div>
-        <el-footer>
-          <Footer></Footer>
-        </el-footer>
-      </el-main>
-
-    </el-container>
-  </div>
+      <el-form-item style="text-align: center">
+        <el-button :loading="isLoading" type="primary" @click="create">Create</el-button>
+      </el-form-item>
+    </el-form>
+  </BasicFramework>
 </template>
 
 <script>
-import "element-plus/dist/index.css"
 import {CheckSession, RemoveTokens} from "../lib/auth-util";
 import {ElMessage} from "element-plus";
 import axios from "axios";
@@ -176,14 +133,13 @@ export default {
             headers: headers
           })
               .then((response) => {
-                setTimeout(() => {
-                  this.recaptchaReset()
-                  this.isLoading = false
-                }, 1000)
                 let id = response.data.id.toString(36)
                 ElMessage({
-                  message: 'Success, ID: ' + id,
+                  message: 'Create success, ID: ' + id,
                   type: "success"
+                })
+                setTimeout(() => {
+                  this.$router.push({name: 'pastes', params: {'id': id}})
                 })
               })
               .catch((error) => {
@@ -267,7 +223,7 @@ export default {
     setTimeout(() => {
       if (this.loading)
         ElMessage({
-          message: 'Error: Recaptcha component load fail',
+          message: 'Error: Fail to load recaptcha components',
           type: 'error'
         })
     }, 5000)
@@ -276,11 +232,10 @@ export default {
 </script>
 
 <script setup>
-import {Timer} from "@element-plus/icons-vue";
 import {SITE_KEY, RECAPTCHA_HOST} from "../config/config";
-import Footer from "../components/Footer.vue";
 import {VueRecaptcha} from "vue-recaptcha";
 import {CheckSession} from "../lib/auth-util";
+import BasicFramework from "../components/BasicFramework.vue";
 
 const rules = {
   paste: {
@@ -358,53 +313,5 @@ const typeOptions = [
 </script>
 
 <style scoped>
-#title {
-  margin: 20px;
-}
 
-#main {
-  margin: 0 auto;
-}
-
-@media (min-width: 600px) {
-  #main {
-    width: 50%;
-    min-width: 550px;
-  }
-}
-
-.el-container {
-  height: 100%;
-}
-
-.el-header {
-  background-color: var(--el-color-primary);
-  box-shadow: var(--el-box-shadow-base);
-  z-index: 100;
-  white-space: nowrap;
-}
-
-.el-main {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-#placeholder {
-  flex: 1 0 auto;
-}
-
-.el-footer {
-  height: 60px;
-  width: 100%;
-  line-height: 60px;
-  margin: 0 auto;
-  flex: 0 0 auto;
-}
-
-.header-button {
-  font-weight: bold;
-  font-size: var(--el-font-size-base);
-  border: 1px solid white;
-}
 </style>

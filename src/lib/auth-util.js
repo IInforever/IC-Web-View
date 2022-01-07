@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) IInfo 2022.
+ */
+
 export function DecodeJWT(token) {
     let part = token.split(".")
     return JSON.parse(decodeURIComponent(escape(window
@@ -24,10 +28,10 @@ export function CheckSession() {
 }
 
 export function UpdateToken(response) {
-    let sessions = ['auth-token', 'admin-token']
-    let subjects = ['auth', 'Admin']
     let token = response.headers.authorization
     if (token) {
+        let sessions = ['auth-token', 'admin-token']
+        let subjects = ['auth', 'Admin']
         let data = DecodeJWT(token)
         for (const i in subjects) {
             if (data.sub === subjects[i])

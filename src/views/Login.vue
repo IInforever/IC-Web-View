@@ -241,7 +241,7 @@ export default {
         type: "warning"
       })
       setTimeout(() => {
-        this.$router.push({name: 'admin'})
+        this.$router.push({name: 'admin-index'})
       }, 1000)
     }
     setTimeout(() => {

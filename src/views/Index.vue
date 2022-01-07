@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import {CheckSession, RemoveTokens} from "../lib/auth-util";
+import {CheckSession, RemoveTokens, UpdateToken} from "../lib/auth-util";
 import {ElMessage} from "element-plus";
 import axios from "axios";
 
@@ -133,6 +133,7 @@ export default {
             headers: headers
           })
               .then((response) => {
+                UpdateToken(response)
                 let id = response.data.id.toString(36)
                 ElMessage({
                   message: 'Create success, ID: ' + id,
@@ -149,15 +150,10 @@ export default {
                 }, 1000)
                 if (error.response) {
                   let status = error.response.status
-                  if (status === 404 || status === 403) {
-                    ElMessage({
-                      message: 'Login fail: username or password error',
-                      type: 'error'
-                    })
-                  } else if (status === 400) {
+                  if (status === 400) {
                     if (error.response.data['code'] >= 23 && error.response.data['code'] <= 25)
                       ElMessage({
-                        message: 'Register fail: Recaptcha validation fail',
+                        message: 'Recaptcha validation fail',
                         type: 'error'
                       })
                     else
@@ -167,12 +163,12 @@ export default {
                       })
                   } else if (status >= 500) {
                     ElMessage({
-                      message: 'Login fail: server error',
+                      message: 'Server error',
                       type: 'error'
                     })
                   } else {
                     ElMessage({
-                      message: 'Login fail: unknown error',
+                      message: 'Unknown error',
                       type: 'error'
                     })
                   }

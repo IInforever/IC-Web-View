@@ -14,6 +14,7 @@
           <el-table-column label="Email" prop="email"/>
           <el-table-column label="Password" prop="passwd"/>
           <el-table-column label="Last Login Time" prop="lastLoginTime"/>
+          <el-table-column label="Create Time" prop="createTime"/>
           <el-table-column fixed="right" label="Operations" width="100">
             <template #default="scope">
               <el-button :icon="Edit" circle size="small" type="primary" @click="handleUpdate(scope.row)"></el-button>
@@ -216,11 +217,17 @@ export default {
             message: 'Server error',
             type: 'error'
           })
-        } else if (status === 400 && error.response.data.code === 20) {
-          ElMessage({
-            message: 'Credentials expired',
-            type: 'warning'
-          })
+        } else if (status === 400) {
+          if (error.response.data.code === 20)
+            ElMessage({
+              message: 'Credentials expired',
+              type: 'warning'
+            })
+          else if (error.response.data.code === 21)
+            ElMessage({
+              message: 'Duplicated username or email',
+              type: 'warning'
+            })
         } else if (status === 404) {
           ElMessage({
             message: 'Not found',

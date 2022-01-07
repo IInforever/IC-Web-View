@@ -141,7 +141,7 @@ export default {
       return
     }
 
-    axios.get("/api/user", {
+    axios.get("/api/users", {
       headers: {
         Authorization: localStorage.getItem('auth-token')
       }

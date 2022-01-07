@@ -79,10 +79,10 @@ export default {
   margin: 0 auto;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 640px) {
   #main {
     width: 50%;
-    min-width: 550px;
+    min-width: 600px;
   }
 }
 

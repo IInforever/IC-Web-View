@@ -4,7 +4,7 @@
 
 <template>
   <BasicFramework :auth="auth"
-                  :title="'Clipboard: ' + id.toString(36)"
+                  :title="'Clipboard: ' + id"
                   @home="$router.push(auth===0?{name:'home'}:{name:'admin-index'})"
                   @login="$router.push({name:'login'})" @logout="logout"
                   @register="$router.push({name:'register'})">
@@ -19,7 +19,7 @@
         </el-form>
       </div>
       <div v-else>
-        <el-descriptions :column="2" :title="paste.title" border size="small">
+        <el-descriptions :column="large?2:1" :title="paste.title" border size="small">
           <el-descriptions-item>
             <template #label>
               <div>
@@ -29,7 +29,7 @@
                 ID
               </div>
             </template>
-            {{ id.toString(36) }}
+            <el-link :data-clipboard-text="id" class="copy" @click="copyContent">{{ id }}</el-link>
           </el-descriptions-item>
           <el-descriptions-item>
             <template #label>
@@ -64,7 +64,7 @@
             </template>
             {{ paste.expireTime }}
           </el-descriptions-item>
-          <el-descriptions-item :span="2">
+          <el-descriptions-item>
             <template #label>
               <div>
                 <el-icon>
@@ -84,7 +84,12 @@
           </el-descriptions-item>
         </el-descriptions>
         <h3 style="margin-top: 20px">Content</h3>
-        <el-input v-model="paste.paste" :autosize="true" readonly resize="none" style="margin-top: 20px"
+        <el-button class="copy" data-clipboard-target="#content" size="small" style="float: right"
+                   @click="copyContent">
+          Copy
+        </el-button>
+        <el-input id="content" ref="content" v-model="paste.paste" :autosize="true" readonly resize="none"
+                  style="margin-top: 20px"
                   type="textarea"></el-input>
       </div>
     </div>
@@ -107,6 +112,7 @@ import BasicFramework from "../components/BasicFramework.vue";
 import {CheckSession, RemoveTokens, UpdateToken} from "../lib/auth-util";
 import {ElMessage} from "element-plus";
 import axios from "axios";
+import Clipboard from "clipboard";
 
 function errorHandler(error) {
   if (error.response) {
@@ -143,6 +149,7 @@ export default {
   data() {
     return {
       auth: CheckSession(),
+      large: document.documentElement.clientWidth > 640,
       loading: true,
       passwordRequired: false,
       form: {
@@ -168,7 +175,7 @@ export default {
       this.$refs.form.validate((valid) => {
         if (valid) {
           this.submitLoading = true
-          axios.get("/api/pastes/" + this.id, {
+          axios.get("/api/pastes/" + parseInt(this.id, 36), {
             params: {
               passwd: this.form.password
             }
@@ -198,7 +205,6 @@ export default {
                           type: 'warning'
                         })
                       } else if (error.response.status === 403) {
-                        this.passwordRequired = true
                         this.submitLoading = false
                         ElMessage({
                           message: 'Password error',
@@ -226,15 +232,35 @@ export default {
               this.paste.username = "Delete user"
             }
           })
+    },
+    copyContent() {
+      let clipboard = new Clipboard('.copy')
+      clipboard.on('success', function (e) {
+        ElMessage({
+          message: 'Copied!',
+          type: "success",
+        })
+        e.clearSelection()
+        clipboard.destroy()
+      })
+      clipboard.on("error", function (e) {
+        console.error('Action:', e.action);
+        console.error('Trigger:', e.trigger);
+        clipboard.destroy()
+      })
+    },
+    onResize() {
+      this.large = document.documentElement.clientWidth > 640
     }
   },
   mounted() {
+    window.addEventListener("resize", this.onResize)
     let id = parseInt(this.$route.params.id, 36);
     if (id <= 0 || id > 0xffffffff) {
       this.$router.push({name: 'notfound', params: {pathMatch: '404'}})
       return
     }
-    this.id = id
+    this.id = id.toString(36)
     let config
     if (this.auth === 0) {
       config = {
@@ -284,6 +310,9 @@ export default {
               }
             }
         )
+  },
+  unmounted() {
+    window.removeEventListener("resize", this.onResize)
   }
 }
 </script>

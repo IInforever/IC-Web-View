@@ -83,7 +83,6 @@ const rules = {
 import axios from "axios";
 import {ElMessage} from "element-plus";
 import {CheckSession} from "../lib/auth-util";
-import na from "../../dist/assets/Users.2e5b33f8";
 
 export default {
   data() {

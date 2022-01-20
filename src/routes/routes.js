@@ -41,27 +41,32 @@ const routes = [
         component: () => import('../views/Home.vue'),
         meta: {
             title: 'Home page'
-        }
+        },
+        children: [
+            {
+                path: 'info',
+                name: 'user-info',
+                component: () => import('../views/user/Info.vue')
+            }
+        ]
     },
     {
         path: '/admin',
         name: 'admin',
         component: () => import('../views/Admin.vue'),
         meta: {
-          title: 'Admin'
+            title: 'Admin'
         },
         children: [
             {
                 path: 'stat',
                 name: 'admin-stat',
                 component: () => import('../views/admin/Stat.vue')
-
             },
             {
                 path: 'users',
                 name: 'admin-users',
                 component: () => import('../views/admin/Users.vue')
-
             },
             {
                 path: '',

@@ -83,6 +83,7 @@ const rules = {
 import axios from "axios";
 import {ElMessage} from "element-plus";
 import {CheckSession} from "../lib/auth-util";
+import na from "../../dist/assets/Users.2e5b33f8";
 
 export default {
   data() {
@@ -134,13 +135,17 @@ export default {
                   } else {
                     window.localStorage.setItem("auth-token", token)
                   }
-                  ElMessage({
-                    message: 'Login success',
-                    type: 'success'
-                  })
-                  setTimeout(() => {
-                    this.$router.push(this.authScope === "admin" ? {name: 'admin-index'} : {name: 'index'})
-                  }, 1000)
+                  if (this.authScope === 'admin') {
+                    ElMessage({
+                      message: 'Login success',
+                      type: 'success'
+                    })
+                    setTimeout(() => {
+                      this.$router.push({name: 'admin-index'})
+                    }, 1000)
+                  } else {
+                    this.getUsername(token)
+                  }
                 } else {
                   ElMessage({
                     message: 'Error: no specified response',
@@ -194,6 +199,48 @@ export default {
           })
         }
       })
+    },
+    getUsername(token) {
+      axios.get("/api/users", {
+        headers: {
+          Authorization: token
+        }
+      })
+          .then((response) => {
+            // OK
+            let name = response.data.name
+            localStorage.setItem("username", name)
+            ElMessage({
+              message: "Welcome, " + name,
+              type: 'success'
+            })
+            setTimeout(() => {
+              this.$router.push({name: "index"})
+            }, 1000)
+          })
+          .catch((error) => {
+            if (error.response) {
+              let status = error.response.status
+              if (status >= 500) {
+                ElMessage({
+                  message: 'Get Username fail: server error',
+                  type: 'error'
+                })
+              } else {
+                ElMessage({
+                  message: 'Get Username fail: unknown error',
+                  type: 'error'
+                })
+              }
+            } else if (error.request) {
+              ElMessage({
+                message: 'Error:' + error.message,
+                type: "error"
+              })
+            } else {
+              console.log(error)
+            }
+          })
     },
     recaptchaReset() {
       this.isRecaptchaExpired = true

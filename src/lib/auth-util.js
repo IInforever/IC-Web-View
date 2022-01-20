@@ -41,7 +41,7 @@ export function UpdateToken(response) {
 }
 
 export function RemoveTokens() {
-    let keys = ['auth-token', 'admin-token']
+    let keys = ['auth-token', 'admin-token', 'username']
     for (const i of keys) {
         localStorage.removeItem(i)
     }

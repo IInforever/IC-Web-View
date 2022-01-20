@@ -23,16 +23,25 @@
                 </el-button>
               </div>
               <div v-else>
-                <el-button-group>
-                  <el-button class="header-button" size="small" type="primary"
-                             @click="$emit('home')">
-                    {{ auth === 0 ? 'Home' : 'Panel' }}
-                  </el-button>
-                  <el-button class="header-button" size="small" type="primary"
-                             @click="$emit('logout')">
-                    Logout
-                  </el-button>
-                </el-button-group>
+                <el-dropdown trigger="click" @command="handleCommand">
+                  <span :style="{color: 'aliceblue',fontSize: 'var(--el-font-size-base)',fontWeight: 'bold'}"
+                        class="el-dropdown-link">
+                  <el-icon style="vertical-align: middle">
+                    <UserFilled/>
+                  </el-icon>
+                  {{ username }}
+                  <el-icon class="el-icon--right" style="vertical-align: middle">
+                    <ArrowDown/>
+                  </el-icon>
+                  </span>
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item v-if="auth === 0" command="home">Home</el-dropdown-item>
+                      <el-dropdown-item v-else command="panel">Panel</el-dropdown-item>
+                      <el-dropdown-item command="logout">Sign out</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
               </div>
             </div>
           </el-col>
@@ -55,18 +64,37 @@
 </template>
 
 <script setup>
+import {ArrowDown, UserFilled} from "@element-plus/icons-vue";
+import {RemoveTokens} from "../lib/auth-util";
+
+
 const props = defineProps({
   "loading": Boolean,
   auth: Number,
   title: String,
+  username: String,
 })
 
 const emits = defineEmits(['logout', 'login', 'register', 'home'])
 </script>
 
 <script>
+import {RemoveTokens} from "../lib/auth-util";
+
 export default {
   name: "BasicFramework",
+  methods: {
+    handleCommand(command) {
+      if (command === "logout") {
+        RemoveTokens()
+        this.$emit('logout')
+      } else if (command === "home") {
+        this.$router.push({name: 'user-info'})
+      } else if (command === "panel") {
+        this.$router.push({name: 'admin-index'})
+      }
+    }
+  }
 }
 </script>
 

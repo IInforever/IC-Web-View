@@ -3,7 +3,10 @@
   -->
 
 <template>
-  <BasicFramework :auth="auth" :loading="loading" title="Hello, IClipboard"
+  <BasicFramework :auth="auth"
+                  :loading="loading"
+                  :username="username"
+                  title="Hello, IClipboard"
                   @home="$router.push(auth===0?{name:'home'}:{name:'admin-index'})"
                   @login="$router.push({name:'login'})" @logout="logout"
                   @register="$router.push({name:'register'})">
@@ -61,14 +64,15 @@
 </template>
 
 <script>
-import {CheckSession, RemoveTokens, UpdateToken} from "../lib/auth-util";
+import {CheckSession, UpdateToken} from "../lib/auth-util";
 import {ElMessage} from "element-plus";
 import axios from "axios";
 
 export default {
   data() {
     return {
-      auth: CheckSession(),
+      auth: null,
+      username: null,
       postForm: {
         paste: '',
         type: 'raw',
@@ -86,7 +90,6 @@ export default {
   },
   methods: {
     logout() {
-      RemoveTokens()
       this.auth = -1
       this.isPrivate = false
       this.anonymous = true
@@ -216,6 +219,13 @@ export default {
     }
   },
   mounted() {
+
+    this.auth = CheckSession()
+    if (this.auth === 0)
+      this.username = localStorage.getItem("username")
+    else
+      this.username = "Admin"
+
     setTimeout(() => {
       if (this.loading)
         ElMessage({

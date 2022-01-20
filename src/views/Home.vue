@@ -1,12 +1,12 @@
 <!--
-  - Copyright (c) IInfo 2022.
+  - Copyright (c) IInfo 2022 All rights reserved.
   -->
 
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%">
       <el-aside :class="{'menu-collapse':collapse}" class="menu" width="200px">
-        <div style="height: 60px;width: 200px">
+        <div class="index" style="height: 60px;width: 200px">
           <a style="cursor: pointer" @click="$router.push({name:'index'})">
             <h1 style="line-height: 60px">IClipboard</h1>
           </a>
@@ -20,6 +20,12 @@
               <User/>
             </el-icon>
             Info
+          </el-menu-item>
+          <el-menu-item index="/home/pastes">
+            <el-icon>
+              <Edit/>
+            </el-icon>
+            Manage pastes
           </el-menu-item>
         </el-menu>
       </el-aside>
@@ -63,7 +69,7 @@
 </template>
 
 <script setup>
-import {ArrowDown, Expand, Fold, User} from "@element-plus/icons-vue";
+import {ArrowDown, Edit, Expand, Fold, User} from "@element-plus/icons-vue";
 import Footer from "../components/Footer.vue";</script>
 
 <script>
@@ -74,7 +80,7 @@ export default {
   name: "Home",
   data() {
     return {
-      user: {name: localStorage.getItem("username")},
+      user: {name: ''},
       collapse: false,
     }
   },
@@ -92,6 +98,16 @@ export default {
       }
     }
   },
+  beforeMount() {
+    let name = localStorage.getItem("username")
+    if (name)
+      this.user.name = name
+    else {
+      this.$router.push({name: 'login'})
+
+    }
+
+  }
 }
 </script>
 

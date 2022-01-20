@@ -1,5 +1,5 @@
 /*
- * Copyright (c) IInfo 2022.
+ * Copyright (c) IInfo 2022 All rights reserved.
  */
 
 const routes = [
@@ -47,6 +47,11 @@ const routes = [
                 path: 'info',
                 name: 'user-info',
                 component: () => import('../views/user/Info.vue')
+            },
+            {
+                path: 'pastes',
+                name: 'user-pastes',
+                component: () => import('../views/user/Pastes.vue')
             }
         ]
     },

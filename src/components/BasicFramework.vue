@@ -1,5 +1,5 @@
 <!--
-  - Copyright (c) IInfo 2022.
+  - Copyright (c) IInfo 2022 All rights reserved.
   -->
 
 <template>
@@ -14,11 +14,11 @@
           <el-col :sm="12" :xs="12" style="text-align: right;">
             <div v-if="auth!=null">
               <div v-if="auth===-1">
-                <el-button class="header-button" size="small" type="primary" @click="$emit('login')">
+                <el-button class="header-button" size="small" type="primary" @click="$router.push({name:'login'})">
                   Login
                 </el-button>
                 <el-button class="header-button" size="small"
-                           @click="$emit('register')">
+                           @click="$router.push({name:'register'})">
                   Sign up
                 </el-button>
               </div>
@@ -72,10 +72,16 @@ const props = defineProps({
   "loading": Boolean,
   auth: Number,
   title: String,
-  username: String,
 })
 
 const emits = defineEmits(['logout', 'login', 'register', 'home'])
+
+let username
+if (props.auth === 0)
+  username = localStorage.getItem("username")
+else
+  username = "Admin"
+
 </script>
 
 <script>

@@ -1,13 +1,11 @@
 <!--
-  - Copyright (c) IInfo 2022.
+  - Copyright (c) IInfo 2022 All rights reserved.
   -->
 
 <template>
   <BasicFramework :auth="auth"
-                  :title="'Clipboard: ' + id"
-                  @home="$router.push(auth===0?{name:'home'}:{name:'admin-index'})"
-                  @login="$router.push({name:'login'})" @logout="logout"
-                  @register="$router.push({name:'register'})">
+                  :title="paste.title"
+                  @logout="logout">
     <el-skeleton v-if="loading" :rows="10" animated></el-skeleton>
     <div v-else>
       <div v-if="passwordRequired">
@@ -19,7 +17,7 @@
         </el-form>
       </div>
       <div v-else>
-        <el-descriptions :column="large?2:1" :title="paste.title" border size="small">
+        <el-descriptions :column="large?2:1" border size="small">
           <el-descriptions-item>
             <template #label>
               <div>
@@ -70,7 +68,7 @@
                 <el-icon>
                   <Operation/>
                 </el-icon>
-                Meta info
+                Metadata
               </div>
             </template>
             <el-tag class="meta-tags" size="small" type="info">{{ paste.type }}</el-tag>
@@ -88,7 +86,7 @@
                    @click="copyContent">
           Copy
         </el-button>
-        <el-input id="content" ref="content" v-model="paste.paste" :autosize="true" readonly resize="none"
+        <el-input id="content" ref="content" v-model="paste.content" :autosize="true" readonly resize="none"
                   style="margin-top: 20px"
                   type="textarea"></el-input>
       </div>
@@ -162,7 +160,6 @@ export default {
   },
   methods: {
     logout() {
-      RemoveTokens()
       this.auth = -1
       this.isPrivate = false
       this.anonymous = true

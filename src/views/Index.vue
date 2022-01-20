@@ -1,18 +1,15 @@
 <!--
-  - Copyright (c) IInfo 2022.
+  - Copyright (c) IInfo 2022 All rights reserved.
   -->
 
 <template>
   <BasicFramework :auth="auth"
                   :loading="loading"
-                  :username="username"
                   title="Hello, IClipboard"
-                  @home="$router.push(auth===0?{name:'home'}:{name:'admin-index'})"
-                  @login="$router.push({name:'login'})" @logout="logout"
-                  @register="$router.push({name:'register'})">
+                  @logout="logout">
     <el-form ref="input" :model="postForm" :rules="rules" :status-icon="false" style="text-align: left">
-      <el-form-item prop="paste">
-        <el-input v-model="postForm.paste" :autosize="{minRows:10, maxRows:30}" maxlength="5000"
+      <el-form-item prop="content">
+        <el-input v-model="postForm.content" :autosize="{minRows:10, maxRows:30}" maxlength="5000"
                   placeholder="PUT TEXT HERE" resize="none"
                   show-word-limit type="textarea"></el-input>
       </el-form-item>
@@ -71,10 +68,9 @@ import axios from "axios";
 export default {
   data() {
     return {
-      auth: null,
-      username: null,
+      auth: CheckSession(),
       postForm: {
-        paste: '',
+        content: '',
         type: 'raw',
         passwd: '',
         expireDuration: '600',
@@ -219,13 +215,6 @@ export default {
     }
   },
   mounted() {
-
-    this.auth = CheckSession()
-    if (this.auth === 0)
-      this.username = localStorage.getItem("username")
-    else
-      this.username = "Admin"
-
     setTimeout(() => {
       if (this.loading)
         ElMessage({
@@ -244,7 +233,7 @@ import {CheckSession} from "../lib/auth-util";
 import BasicFramework from "../components/BasicFramework.vue";
 
 const rules = {
-  paste: {
+  content: {
     required: true,
     message: 'Please input text',
     trigger: 'blur',

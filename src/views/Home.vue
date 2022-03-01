@@ -11,7 +11,7 @@
             <h1 style="line-height: 60px">IClipboard</h1>
           </a>
         </div>
-        <el-menu :default-active="this.$route.path"
+        <el-menu :default-active="$route.path"
                  router
                  style="height: calc(100% - 60px)"
         >

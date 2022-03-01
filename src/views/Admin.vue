@@ -39,7 +39,7 @@
         <el-aside style="width: fit-content">
           <el-menu
               :collapse="collapse"
-              :default-active="this.$route.path"
+              :default-active="$route.path"
               router
               style="height: 100%">
             <el-menu-item index="/admin/stat">

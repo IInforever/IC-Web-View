@@ -7,7 +7,7 @@
     <el-container>
       <el-header id="auth-header">
         <el-page-header id="auth-page-header" content="Login" title="Back"
-                        @back="this.$router.push({name:'index'})"></el-page-header>
+                        @back="$router.push({name:'index'})"></el-page-header>
       </el-header>
       <el-main>
         <el-form id="auth-form" ref="loginForm" v-loading="loading" :disabled="isDisabled"

@@ -8,7 +8,7 @@
       <el-header id="header">
         <el-row style="line-height: 60px">
           <el-col :sm="6" :xs="6" style="text-align: left">
-            <el-button :icon="HomeFilled" circle type="primary" @click="this.$router.push({name:'index'})">
+            <el-button :icon="HomeFilled" circle type="primary" @click="$router.push({name:'index'})">
             </el-button>
           </el-col>
           <el-col :sm="12" :xs="12">

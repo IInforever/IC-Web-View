@@ -61,7 +61,7 @@
 </template>
 
 <script setup>
-import {SITE_KEY, RECAPTCHA_HOST} from "../config/config";
+import {RECAPTCHA_HOST, SITE_KEY} from "../config/config";
 import {VueRecaptcha} from "vue-recaptcha";
 import {CheckSession} from "../utility/auth";
 import BasicFramework from "../components/BasicFramework.vue";
@@ -69,6 +69,9 @@ import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
 import {useRouter} from "vue-router";
 import {post} from "../utility/request";
+
+// router
+const router = useRouter()
 
 // variables
 let isPrivate = ref(false)
@@ -94,7 +97,7 @@ const inputs = ref(null)
 const recaptcha = ref(null)
 
 // Lifecycle
-onMounted(()=>{
+onMounted(() => {
   setTimeout(() => {
     if (isFrameLoading.value)
       ElMessage({
@@ -145,7 +148,9 @@ const recaptchaReset = () => {
 }
 
 const createPaste = async () => {
-  if (!await inputs.value.validate()) {
+  try {
+    await inputs.value.validate();
+  } catch (e) {
     ElMessage({
       message: 'Invalid inputs',
       type: 'warning'
@@ -179,7 +184,7 @@ const createPaste = async () => {
       data[key] = postForm.value[key]
   }
 
-  if (isAnonymous.value && auth.value === 0)
+  if (!isAnonymous.value && auth.value === 0)
     data.isPrivate = isPrivate.value
 
   await post(url, data, headers, (response) => {
@@ -189,8 +194,8 @@ const createPaste = async () => {
       type: "success"
     })
     setTimeout(() => {
-      useRouter().push({name: 'pastes', params: {'id': id}})
-    })
+      router.push({name: 'pastes', params: {'id': id}})
+    },1000)
   }, {
     hook: () => {
       setTimeout(() => {

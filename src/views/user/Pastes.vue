@@ -37,7 +37,7 @@ import {Lock} from "@element-plus/icons-vue";</script>
 
 <script>
 import axios from "axios";
-import {CheckSession} from "../../lib/auth-util";
+import {CheckSession} from "../../utility/auth";
 import {ElMessage} from "element-plus";
 
 export default {

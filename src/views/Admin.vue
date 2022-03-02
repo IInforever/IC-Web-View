@@ -85,7 +85,7 @@ import {ArrowDown, Expand, Fold, HomeFilled, Menu, User, UserFilled} from "@elem
 import Footer from "../components/Footer.vue";</script>
 
 <script>
-import {CheckSession} from "../lib/auth-util";
+import {CheckSession} from "../utility/auth";
 import {ElMessage} from "element-plus";
 
 export default {

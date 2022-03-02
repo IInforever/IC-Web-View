@@ -65,7 +65,7 @@
 
 <script setup>
 import {ArrowDown, UserFilled} from "@element-plus/icons-vue";
-import {RemoveTokens} from "../lib/auth-util";
+import {RemoveTokens} from "../utility/auth";
 
 
 const props = defineProps({
@@ -85,7 +85,7 @@ else
 </script>
 
 <script>
-import {RemoveTokens} from "../lib/auth-util";
+import {RemoveTokens} from "../utility/auth";
 
 export default {
   name: "BasicFramework",

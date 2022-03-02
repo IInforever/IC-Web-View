@@ -82,7 +82,7 @@ const rules = {
 <script>
 import axios from "axios";
 import {ElMessage} from "element-plus";
-import {CheckSession} from "../lib/auth-util";
+import {CheckSession} from "../utility/auth";
 
 export default {
   data() {

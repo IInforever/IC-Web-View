@@ -94,7 +94,7 @@ const rules = {
 <script>
 import {ElMessage} from "element-plus";
 import axios from "axios";
-import {CheckSession} from "../lib/auth-util";
+import {CheckSession} from "../utility/auth";
 
 export default {
   name: "Register",

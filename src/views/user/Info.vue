@@ -59,7 +59,7 @@ import {Key, Message, Timer, User} from "@element-plus/icons-vue";</script>
 
 <script>
 import axios from "axios";
-import {CheckSession, UpdateToken} from "../../lib/auth-util";
+import {CheckSession, UpdateToken} from "../../utility/auth";
 import {ElMessage} from "element-plus";
 
 export default {

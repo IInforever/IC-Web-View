@@ -107,7 +107,7 @@ const rules = {
 
 <script>
 import BasicFramework from "../components/BasicFramework.vue";
-import {CheckSession, RemoveTokens, UpdateToken} from "../lib/auth-util";
+import {CheckSession, RemoveTokens, UpdateToken} from "../utility/auth";
 import {ElMessage} from "element-plus";
 import axios from "axios";
 import Clipboard from "clipboard";

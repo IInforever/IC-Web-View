@@ -86,7 +86,7 @@ const rules = {
 </script>
 
 <script>
-import {CheckSession, UpdateToken} from "../../lib/auth-util";
+import {CheckSession, UpdateToken} from "../../utility/auth";
 import {ElMessage, ElMessageBox} from "element-plus";
 import axios from "axios";
 

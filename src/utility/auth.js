@@ -28,7 +28,7 @@ export function CheckSession() {
 }
 
 export function UpdateToken(response) {
-    let token = response.headers.authorization
+    let token = response.headers['authorization']
     if (token) {
         let sessions = ['auth-token', 'admin-token']
         let subjects = ['auth', 'Admin']

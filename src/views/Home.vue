@@ -74,7 +74,7 @@ import Footer from "../components/Footer.vue";</script>
 
 <script>
 import {ElMessage} from "element-plus";
-import {RemoveTokens} from "../lib/auth-util";
+import {RemoveTokens} from "../utility/auth";
 
 export default {
   name: "Home",

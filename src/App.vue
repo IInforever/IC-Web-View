@@ -1,22 +1,21 @@
-<!--
-  - Copyright (c) IInfo 2022.
-  -->
-
 <script setup>
-import 'element-plus/dist/index.css'
-import './assets/transition.css'</script>
+import "element-plus/dist/index.css";
+import "./assets/transition.css";
+</script>
 
 <template>
   <router-view v-slot="{ Component }">
     <transition mode="out-in" name="fade">
-      <component :is="Component"/>
+      <component :is="Component" />
     </transition>
   </router-view>
 </template>
 
 <style>
-html, body {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+html,
+body {
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -54,5 +53,4 @@ a:hover {
   height: inherit;
   width: 25px;
 }
-
 </style>

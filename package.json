@@ -1,7 +1,7 @@
 {
   "name": "ic-web-view",
-  "version": "0.0.0",
-  "license": "MIT",
+  "version": "0.1.1",
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

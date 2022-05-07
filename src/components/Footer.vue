@@ -1,19 +1,23 @@
 <template>
-  <div>&copy; {{ currentYear }}
-    <a :href="COM_MAIN_PAGE" style="line-height: 20px;vertical-align: center" target="_blank">{{ COM_NAME }}</a>
+  <div>
+    <span style="line-height: 20px">
+      &copy; {{ currentYear }}
+      <a :href="COM_MAIN_PAGE" target="_blank">{{ COM_NAME }}</a
+      >-<a href="https://github.com/IInforever/iclipboard">IClipboard</a>
+    </span>
   </div>
 </template>
 
 <script setup>
-import {COM_MAIN_PAGE, COM_NAME} from "../config/config";
+import { COM_MAIN_PAGE, COM_NAME } from "../config/config";
 
-const currentYear = new Date().getFullYear()
+const currentYear = new Date().getFullYear();
 </script>
 
 <script>
 export default {
-  name: "Footer"
-}
+  name: "Footer",
+};
 </script>
 
 <style scoped>

@@ -8,37 +8,71 @@
       <el-header>
         <el-row style="line-height: 60px">
           <el-col :sm="12" :xs="12" style="text-align: left">
-            <a href="/"
-               style="color: white;font-weight: bold;font-size: var(--el-font-size-extra-large);">IClipboard</a>
+            <a
+              href="/"
+              style="
+                color: white;
+                font-weight: bold;
+                font-size: var(--el-font-size-extra-large);
+              "
+              >IClipboard</a
+            >
           </el-col>
-          <el-col :sm="12" :xs="12" style="text-align: right;">
-            <div v-if="auth!=null">
-              <div v-if="auth===-1">
-                <el-button class="header-button" size="small" type="primary" @click="$router.push({name:'login'})">
+          <el-col :sm="12" :xs="12" style="text-align: right">
+            <div v-if="auth != null">
+              <div v-if="auth === -1">
+                <el-button
+                  class="header-button"
+                  size="small"
+                  type="primary"
+                  @click="$router.push({ name: 'login' })"
+                >
                   Login
                 </el-button>
-                <el-button class="header-button" size="small"
-                           @click="$router.push({name:'register'})">
+                <el-button
+                  class="header-button"
+                  size="small"
+                  @click="$router.push({ name: 'register' })"
+                >
                   Sign up
                 </el-button>
               </div>
               <div v-else>
-                <el-dropdown trigger="click" @command="handleCommand">
-                  <span :style="{color: 'aliceblue',fontSize: 'var(--el-font-size-base)',fontWeight: 'bold'}"
-                        class="el-dropdown-link">
-                  <el-icon style="vertical-align: middle">
-                    <UserFilled/>
-                  </el-icon>
-                  {{ username }}
-                  <el-icon class="el-icon--right" style="vertical-align: middle">
-                    <ArrowDown/>
-                  </el-icon>
+                <el-dropdown
+                  trigger="click"
+                  @command="handleCommand"
+                  style="line-height: 60px"
+                >
+                  <span
+                    :style="{
+                      color: 'aliceblue',
+                      fontSize: 'var(--el-font-size-base)',
+                      fontWeight: 'bold',
+                    }"
+                    class="el-dropdown-link"
+                  >
+                    <el-icon style="vertical-align: middle">
+                      <UserFilled />
+                    </el-icon>
+                    {{ username }}
+                    <el-icon
+                      class="el-icon--right"
+                      style="vertical-align: middle"
+                    >
+                      <ArrowDown />
+                    </el-icon>
                   </span>
                   <template #dropdown>
                     <el-dropdown-menu>
-                      <el-dropdown-item v-if="auth === 0" command="home">Home</el-dropdown-item>
-                      <el-dropdown-item v-else command="panel">Panel</el-dropdown-item>
-                      <el-dropdown-item command="logout">Sign out</el-dropdown-item>
+                      <el-dropdown-item v-if="auth === 0" command="home"
+                        >Home</el-dropdown-item
+                      >
+                      <el-dropdown-item v-else command="panel"
+                        >Panel</el-dropdown-item
+                      >
+                      <el-dropdown-item command="logout"
+                        >Sign out</el-dropdown-item
+                      >
                     </el-dropdown-menu>
                   </template>
                 </el-dropdown>
@@ -64,44 +98,40 @@
 </template>
 
 <script setup>
-import {ArrowDown, UserFilled} from "@element-plus/icons-vue";
-import {RemoveTokens} from "../utility/auth";
-
+import { ArrowDown, UserFilled } from "@element-plus/icons-vue";
+import { RemoveTokens } from "../utility/auth";
 
 const props = defineProps({
-  "loading": Boolean,
+  loading: Boolean,
   auth: Number,
   title: String,
-})
+});
 
-const emits = defineEmits(['logout', 'login', 'register', 'home'])
+const emits = defineEmits(["logout", "login", "register", "home"]);
 
-let username
-if (props.auth === 0)
-  username = localStorage.getItem("username")
-else
-  username = "Admin"
-
+let username;
+if (props.auth === 0) username = localStorage.getItem("username");
+else username = "Admin";
 </script>
 
 <script>
-import {RemoveTokens} from "../utility/auth";
+import { RemoveTokens } from "../utility/auth";
 
 export default {
   name: "BasicFramework",
   methods: {
     handleCommand(command) {
       if (command === "logout") {
-        RemoveTokens()
-        this.$emit('logout')
+        RemoveTokens();
+        this.$emit("logout");
       } else if (command === "home") {
-        this.$router.push({name: 'user-info'})
+        this.$router.push({ name: "user-info" });
       } else if (command === "panel") {
-        this.$router.push({name: 'admin-index'})
+        this.$router.push({ name: "admin-index" });
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

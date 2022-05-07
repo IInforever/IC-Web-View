@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.2",
-    "unplugin-auto-import": "^0.5.4",
+    "unplugin-auto-import": "^0.7.1",
     "unplugin-element-plus": "^0.4.0",
     "unplugin-vue-components": "^0.19.3",
     "vite": "^2.7.2"

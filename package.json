@@ -11,7 +11,7 @@
     "@element-plus/icons-vue": "^1.1.4",
     "axios": "^0.27.2",
     "clipboard": "^2.0.11",
-    "element-plus": "^2.1.11",
+    "element-plus": "^2.2.0",
     "sass": "^1.51.0",
     "vue": "^3.2.33",
     "vue-recaptcha": "^2.0.2",
